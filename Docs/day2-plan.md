@@ -20,10 +20,16 @@
 
 ### Cuts that follow from decision 1
 
-- Rooms: **4** — Kitchen, Living room, Bedroom, Garden. (Study and Bathroom cut. Bedroom holds the under-bed hiding spot.)
+- Rooms: **4** — Kitchen, Living room, Bedroom, Bathroom. (Study and Garden cut. Bedroom holds the under-bed hiding spot.)
 - Characters: **4** — Not Grandma, Mother, Uncle, Cousin. (Real Grandma appears only in the win screen, static, no walk cycle.)
-- Hiding spots: **2** — under the bed, closet. (Shower cut with the bathroom.)
+- Hiding spots: **2** — under the bed, closet. (The shower stays cut even though the bathroom is back in — hiding spots are locked at 2.)
 - Days: **1 day + 1 night.** No multi-day progression, no NPC behaviour changing across days.
+
+#### Amendment — Tue Aug 25 (Gus)
+
+**The Garden is out, the Bathroom is in.** The 4th room is the Bathroom, not the Garden. The room list above and every other doc (`Docs/GDD.md`, `CLAUDE.md`, `Docs/plans/01-*.md`) reflect the swap; `RoomId` in code matches.
+
+Knock-on fix: the GDD §3 opening beat moved from the garden sink to the **kitchen** sink (Gus's call).
 
 ---
 

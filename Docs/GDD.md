@@ -50,7 +50,7 @@ Brackeys scores across 6 categories: Enjoyment, Gameplay, Innovation, Theme, Vis
 
 Your **Grandma** went out with her friends from the elderly club in town, but when the van dropped her off, she looked… different. No one else in your family seemed to notice, but you did. It's almost as if they're too scared to admit it.
 
-The next day you're watching your "Grandma" do the dishes in the garden sink; she still looks off. You hear a gasp behind you and turn to see your **cousin** run away behind the corner. You follow her, and she tells you that you were right: that thing is not Grandma.
+The next day you're watching your "Grandma" do the dishes in the kitchen sink; she still looks off. You hear a gasp behind you and turn to see your **cousin** run away behind the corner. You follow her, and she tells you that you were right: that thing is not Grandma.
 
 Sneak around the house, avoid the **Doppelgänger**, and find out where they took Grandma and why. Did someone in your family plan this? Your **mother**, **uncle** and **cousin** are all roaming the house — choose who to trust very carefully.
 
@@ -124,7 +124,7 @@ Sneak around the house, avoid the **Doppelgänger**, and find out where they too
   - *Characters*: low-resolution illustration, light rendering (locked palette).
   - *UI/GUI*: low-resolution illustration, simple animations (locked palette).
 - **Original scope (pre-cut):** 5 characters, 7 backgrounds, 3 hiding spots — Grandma ✅, Not Grandma ✅, Uncle, Cousin, Mother · Kitchen, Living room, Bedroom, Study, Bathroom, Garden · Door (multi-frame open/close) · hiding under bed / in closet / in shower · cursor (regular, click, turn left, turn right).
-  - **Cut on day 2:** Study and Bathroom rooms, shower hiding spot. Real Grandma appears only in the win screen (static, no walk cycle).
+  - **Cut (day 2, revised Aug 25):** Study and **Garden** rooms, shower hiding spot. The 4 shipping rooms are Kitchen, Living room, Bedroom, **Bathroom**. Real Grandma appears only in the win screen (static, no walk cycle).
 - **Visual language of deception (proposal, day-2 plan §C4):** every character uses the locked palette, but **Not Grandma uses one colour nobody else in the house uses** — subtle, never explained.
 
 ## 8. Sound & Music — Gus
