@@ -17,7 +17,7 @@ Premise: the protagonist's grandma has been replaced by a doppelgänger. Gather 
 | `Docs/GDD.md` | Full game design document (snapshot of the team's Google Doc). Mantra, pillars, story, core loop, features table, art & audio direction, win/lose. |
 | `Docs/day2-plan.md` | Scope cuts and decisions locked on Aug 24. **Authoritative where it disagrees with the GDD.** |
 
-Locked scope: **4 rooms** (Kitchen, Living room, Bedroom, Garden), **4 characters** (Not Grandma, Mother, Uncle, Cousin), 1 day + 1 night, 2 hiding spots (under bed, closet), 2 police "lives", one 8–12 min run.
+Locked scope: **4 rooms** (Kitchen, Living room, Bedroom, Bathroom), **4 characters** (Not Grandma, Mother, Uncle, Cousin), 1 day + 1 night, 2 hiding spots (under bed, closet), 2 police "lives", one 8–12 min run.
 
 `Docs/GDD.md` is a copy — the team edits the Google Doc. If Gus mentions a design change that isn't in these files, update them as part of the feature work.
 
