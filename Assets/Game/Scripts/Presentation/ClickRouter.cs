@@ -8,6 +8,7 @@ namespace Game.Presentation
         [SerializeField] private Camera _camera;
         [SerializeField] private InputActionReference _clickAction;
         [SerializeField] private InputActionReference _pointAction;
+        [SerializeField] private DialogueController _dialogueController;
 
         private void OnEnable()
         {
@@ -25,6 +26,16 @@ namespace Game.Presentation
 
         private void OnClick(InputAction.CallbackContext context)
         {
+            if (_dialogueController.IsDialogueActive)
+            {
+                if (_dialogueController.CurrentNodeData.Options != null && _dialogueController.CurrentNodeData.Options.Length > 0)
+                {
+                    // If there are dialogue options, do not advance the dialogue on click
+                    return;
+                }
+                _dialogueController.AdvanceDialogue();
+                return;
+            }
             Ray ray = _camera.ScreenPointToRay(_pointAction.action.ReadValue<Vector2>());
             RaycastHit2D hit = Physics2D.GetRayIntersection(ray);
             if (hit.collider != null)

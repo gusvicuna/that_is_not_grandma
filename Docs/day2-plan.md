@@ -31,6 +31,16 @@
 
 Knock-on fix: the GDD §3 opening beat moved from the garden sink to the **kitchen** sink (Gus's call).
 
+#### Amendment — Wed Aug 26 (Gus)
+
+Decisions made while designing the story/dialogue systems against the story flowchart (`Docs/Not grandma's story line.drawio`):
+
+1. **Task swap.** Gus takes the **dialogue system + story progression system**; Janhavi takes **room navigation + the police call flow**. This supersedes the Tue/Wed task tables below where they say otherwise.
+2. **Story progression system is an explicit Must-Have.** The flowchart is implemented as game-state flags plus a list of story *beats* (trigger → conditions → effects) evaluated by a pure-C# `StoryDirector` in Domain. It was previously implicit in "movement of NPCs" and "time system"; without it there is no game sequence.
+3. **The intro is free-roam with triggers**, not a forced sequence. Each intro beat (Mother/Cousin/Uncle intros, first clue, Not Grandma's arrival) fires the first time its condition is met while the player roams.
+4. **Day clock is mixed:** a real-time base timer plus a time cost charged by significant actions (searching a hiding place, talking, trading a clue).
+5. **Dialogue is homemade — no Yarn Spinner / Ink.** Evaluated both (Aug 26): integration + WebGL risk isn't worth it 3 days out, and the clue-for-clue exchange is bespoke gameplay UI either way. The system is minimal dialogue graphs in ScriptableObjects with **cosmetic branching**: dialogue options change which lines you hear, never game state. This promotes the "Dialogue options" Nice-to-Have in that limited form only. The seam stays clean enough to plug Ink in post-jam.
+
 ---
 
 ## B. The MVP loop (Must-Have only — must exist by Wednesday)
