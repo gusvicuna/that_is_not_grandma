@@ -96,13 +96,14 @@ Sneak around the house, avoid the **Doppelgänger**, and find out where they too
 | Characters | Trust system |
 | Dialogue system | NPC favors (gather items or activate something in exchange for information) |
 | Dialogue trees for each NPC | Night — locking rooms with items |
-| Information exchange using clues/evidence | Night — ask for help from trusted NPCs |
+| Story progression system: flags + triggered beats driving the story flowchart (`Docs/Not grandma's story line.drawio`) — *added Aug 26* | Night — ask for help from trusted NPCs |
+| Information exchange using clues/evidence | |
 | Player navigation in the house (Input System click) | Calling the police accusing *any* NPC, with evidence and consequences |
 | Player interaction with items (Input System click): activate text or gather clues | Cutscenes |
-| Movement of NPCs, Not Grandma and items around the house | Dialogue options |
+| Movement of NPCs, Not Grandma and items around the house | Dialogue options — *promoted Aug 26 as cosmetic branching only: options change which lines play, never game state* |
 | Calling the police selecting evidence (**Not Grandma as the only suspect for now**) | Traitor changes between runs |
 | Police trust (like lives) | |
-| Time system for day/night | |
+| Time system for day/night (mixed: real-time base + per-action time costs — *Aug 26*) | |
 | Night — hideable places (Input System click) | |
 | Night — Not Grandma behaviour | |
 | Night — losing | |

@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fa0fb36a19452347ba407dd1a6317a6, type: 3}
+  m_Name: DLG_Test_Branching
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Data.DialogueSO
+  _id: test branching
+  _nodes:
+  - _speakerType: 0
+    _speakerName: Cousin
+    _text: Hey looking good!
+    _options: []
+    _nextIndex: 1
+  - _speakerType: 1
+    _speakerName: Player
+    _text: Really? Thanks
+    _options: []
+    _nextIndex: 2
+  - _speakerType: 0
+    _speakerName: Cousin
+    _text: How do I look?
+    _options:
+    - _text: You look good!
+      _targetIndex: 3
+    - _text: Emm...
+      _targetIndex: 4
+    _nextIndex: 2
+  - _speakerType: 0
+    _speakerName: Cousin
+    _text: Thanks!
+    _options: []
+    _nextIndex: 6
+  - _speakerType: 0
+    _speakerName: Cousin
+    _text: Ok. No need to be so harsh.
+    _options: []
+    _nextIndex: 5
+  - _speakerType: 2
+    _speakerName: PLayer
+    _text: Oh. That might have affected her..
+    _options: []
+    _nextIndex: 6
+  - _speakerType: 0
+    _speakerName: Cousin
+    _text: Anyway, I have to go. Bye!
+    _options: []
+    _nextIndex: -1
