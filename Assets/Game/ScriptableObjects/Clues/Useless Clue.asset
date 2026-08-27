@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 285585a969554204aa943235a7a9bdb8, type: 3}
-  m_Name: Pills Clue
+  m_Name: Useless Clue
   m_EditorClassIdentifier: Assembly-CSharp::Game.Data.ClueSO
-  _id: pills
-  _text: 'There were all pills in Grandma''s pill box '
-  _roomId: 3
+  _id: useless
+  _text: 'Oh this is useless '
+  _roomId: 0
   _isEvidence: 0

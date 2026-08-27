@@ -18,12 +18,12 @@ namespace Game.Presentation
         [SerializeField] private GameObject _dialoguePanel;
         [SerializeField] private TextMeshProUGUI _speakerNameText;
         [SerializeField] private TextMeshProUGUI _dialogueText;
-        [SerializeField] private GameObject _speakerPortrait;
+        [SerializeField] private Image _portraitImage;
         [SerializeField] private GameObject[] _dialogueOptionButtons;
         [SerializeField] private DialogueController _dialogueController;
-        [SerializeField] private SpeakerStyle _npcStyle;
         [SerializeField] private SpeakerStyle _playerStyle;
         [SerializeField] private SpeakerStyle _monologueStyle;
+        [SerializeField] private SpeakerStyle _npcStyle;
 
         private TextMeshProUGUI[] _optionLabels;
 
@@ -57,23 +57,26 @@ namespace Game.Presentation
             }
 
             DialogueNodeData node = _dialogueController.CurrentNodeData;
-            bool isMonologue = node.SpeakerType == SpeakerType.InnerMonologue;
 
             _dialoguePanel.SetActive(true);
-            _speakerNameText.gameObject.SetActive(!isMonologue);
-            if (_speakerPortrait != null)
-            {
-                _speakerPortrait.SetActive(!isMonologue);
-            }
-            if (!isMonologue)
-            {
-                _speakerNameText.text = node.SpeakerName;
-            }
 
             SpeakerStyle style = StyleFor(node.SpeakerType);
             _dialogueText.color = style.textColor;
             _dialogueText.fontStyle = style.fontStyle;
             _dialogueText.text = node.Text;
+
+            // An Npc node with no NpcSO wired keeps _npcStyle instead of throwing
+            NpcSO speaker = node.Speaker;
+            bool hasSpeaker = node.SpeakerType == SpeakerType.Npc && speaker != null;
+            _speakerNameText.gameObject.SetActive(hasSpeaker);
+            _portraitImage.gameObject.SetActive(hasSpeaker && speaker.Portrait != null);
+            if (hasSpeaker)
+            {
+                _portraitImage.sprite = speaker.Portrait;
+                _speakerNameText.text = speaker.DisplayName;
+                _speakerNameText.color = speaker.Color;
+                _dialogueText.color = speaker.Color;
+            }
 
             for (int i = 0; i < _dialogueOptionButtons.Length; i++)
             {
@@ -88,15 +91,12 @@ namespace Game.Presentation
 
         private SpeakerStyle StyleFor(SpeakerType type)
         {
-            switch (type)
+            return type switch
             {
-                case SpeakerType.Player:
-                    return _playerStyle;
-                case SpeakerType.InnerMonologue:
-                    return _monologueStyle;
-                default:
-                    return _npcStyle;
-            }
+                SpeakerType.Player => _playerStyle,
+                SpeakerType.InnerMonologue => _monologueStyle,
+                _ => _npcStyle,
+            };
         }
 
         public void AdvanceDialogue()

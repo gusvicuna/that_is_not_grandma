@@ -9,6 +9,7 @@ namespace Game.Presentation
         [SerializeField] private InputActionReference _clickAction;
         [SerializeField] private InputActionReference _pointAction;
         [SerializeField] private DialogueController _dialogueController;
+        [SerializeField] private ExchangeController _exchangeController;
 
         private void OnEnable()
         {
@@ -28,14 +29,22 @@ namespace Game.Presentation
         {
             if (_dialogueController.IsDialogueActive)
             {
-                if (_dialogueController.CurrentNodeData.Options != null && _dialogueController.CurrentNodeData.Options.Length > 0)
+                // Choice nodes are advanced by their option buttons, not by clicking the world
+                if (!_dialogueController.CurrentNodeHasOptions)
                 {
-                    // If there are dialogue options, do not advance the dialogue on click
-                    return;
+                    _dialogueController.AdvanceDialogue();
                 }
-                _dialogueController.AdvanceDialogue();
                 return;
             }
+            if (_exchangeController.IsExchangeActive)
+            {
+                return;
+            }
+            InteractAtPointer();
+        }
+
+        private void InteractAtPointer()
+        {
             Ray ray = _camera.ScreenPointToRay(_pointAction.action.ReadValue<Vector2>());
             RaycastHit2D hit = Physics2D.GetRayIntersection(ray);
             if (hit.collider != null)

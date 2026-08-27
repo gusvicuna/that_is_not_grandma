@@ -1,7 +1,7 @@
 # 02 — Dialogue system (graphs with cosmetic branching)
 **Goal:** Click an NPC to play a dialogue graph — sequences of speaker lines with optional player choices that alter which lines play but never game state. **Priority:** Must-Have (GDD §5: "Dialogue system", "Dialogue trees for each NPC"; day-2 plan Aug 26 amendment: homemade, cosmetic branching, owned by Gus).
 
-Decisions this plan encodes (day-2 plan, Aug 26 amendment): no Yarn Spinner / Ink; branching is cosmetic only; the seam to the future `StoryDirector` (plan 03) is the pair of channels below — *which* dialogue an NPC offers is not this plan's problem.
+Decisions this plan encodes (day-2 plan, Aug 26 amendment): no Yarn Spinner / Ink; branching is cosmetic only; the seam to the future `StoryDirector` (plan 04) is the pair of channels below — *which* dialogue an NPC offers is not this plan's problem.
 
 ## Domain
 Pure C#, no UnityEngine. Namespace `Game.Domain`. The domain models dialogue **topology only** — indices, not text. Text lives in Data; Presentation joins the two by node index.
@@ -28,7 +28,7 @@ Channel SOs per the CLAUDE.md pattern. Namespace `Game.Events`, in `Assets/Game/
 | Channel | Payload | Raised by | Listened by |
 |---|---|---|---|
 | `DialogueRequestedEventChannelSO` | `DialogueSO` | `NpcInteractable` (click on an NPC) | `DialogueController` |
-| `DialogueFinishedEventChannelSO` | `DialogueSO` | `DialogueController` (runner reached end) | plan 03 `StoryDirector` (beat trigger "talked to X"); later: audio |
+| `DialogueFinishedEventChannelSO` | `DialogueSO` | `DialogueController` (runner reached end) | plan 04 `StoryDirector` (beat trigger "talked to X"); later: audio |
 
 ## Data
 Namespace `Game.Data`, in `Assets/Game/Scripts/Data/`. All player-facing strings are placeholders (`"[MOTHER_INTRO_01]"`, `"[OPT_ASK_ABOUT_GRANDMA]"`) — real lines are written by their assigned humans (writing split, day-2 plan §A5; jam rule: no AI text).
@@ -37,10 +37,11 @@ Namespace `Game.Data`, in `Assets/Game/Scripts/Data/`. All player-facing strings
   - `string _id` — unique, e.g. `dlg_mother_intro`
   - `DialogueNodeData[] _nodes`
   - `DialogueGraph ToGraph()` — builds the Domain graph from the node array (Data may reference Domain, never the reverse). Any authoring mistake surfaces as the ctor's `ArgumentException`.
+  - *Added Aug 27 (plan 03): `bool _allowsClueExchange` — off by default; marks the conversations that end with a clue-share prompt.*
 - `SpeakerType` (enum, own file): `Npc`, `Player`, `InnerMonologue`. Presentation-facing metadata — the Domain never sees it. Default (`Npc`) keeps previously-authored assets valid. *(Added Aug 26: inner monologues + distinct player text.)*
 - `DialogueNodeData` (`[Serializable]`, plain class in the same file):
   - `SpeakerType _speakerType` — drives the view: `InnerMonologue` hides speaker name/portrait; `Player` and `Npc` pick different text styles.
-  - `string _speakerName` — placeholder display name (`"[MOTHER]"`). Ignored by the view for `InnerMonologue` nodes. A proper `NpcSO` arrives with the NPC feature; don't build it here.
+  - `string _speakerName` — placeholder display name (`"[MOTHER]"`). Ignored by the view for `InnerMonologue` nodes. A proper `NpcSO` arrives with the NPC feature; don't build it here. *Superseded Aug 27 (plan 03): replaced by an `NpcSO _speaker` reference — name, colour and portrait come from the asset.*
   - `[TextArea] string _text` — the line, placeholder.
   - `DialogueOptionData[] _options` — empty = linear node.
   - `int _nextIndex` — used when `_options` is empty; `-1` ends.
@@ -53,7 +54,7 @@ Namespace `Game.Presentation`, thin MonoBehaviours in `Presentation/Dialogue/` (
 
 | Component | Folder | Responsibility | Channels |
 |---|---|---|---|
-| `NpcInteractable` | `Presentation/Dialogue/` | `IInteractable` + `Collider2D` on the NPC placeholder. Serialized: `DialogueSO` (the dialogue this NPC currently offers — plan 03 will swap it by story state) + request channel. On interact: raise `DialogueRequested`. | raises `DialogueRequested` |
+| `NpcInteractable` | `Presentation/Dialogue/` | `IInteractable` + `Collider2D` on the NPC placeholder. Serialized: `DialogueSO` (the dialogue this NPC currently offers — plan 04 will swap it by story state) + request channel. On interact: raise `DialogueRequested`. | raises `DialogueRequested` |
 | `DialogueController` | `Presentation/Dialogue/` | Owns the `DialogueRunner` for the active conversation. Listens to `DialogueRequested`: builds the graph (`ToGraph()`), creates a runner, exposes the current node's data (speaker/text/options) to the view. Public `Advance()` / `Choose(int)` called by the view; raises `DialogueFinished` and clears state when the runner finishes. Ignores requests while a dialogue is active. `IsDialogueActive` is public — `ClickRouter` gates on it. | listens `DialogueRequested`, raises `DialogueFinished` |
 | `DialogueView` | `Presentation/UI/` | uGUI + TMP panel: speaker label, optional portrait slot, line text, and a group of option buttons (choice nodes; only as many active as there are options; option-index→node-index mapping stays inside the runner). Subscribes to `DialogueController.OnNodeChanged`, re-reads the current node on each change. Per-`SpeakerType` styling (serialized color + font style for Npc / Player / InnerMonologue); `InnerMonologue` hides the speaker label and portrait. Placeholder visuals — Irene owns the dialogue UI art. | — (reads controller) |
 
@@ -71,7 +72,7 @@ All manual work by Gus:
 3. Create two test dialogues in `Assets/Game/ScriptableObjects/Dialogues/` (menu `Game/Data/Dialogue`), placeholder text only:
    - `DLG_Test_Linear` — 3 linear nodes, last node `_nextIndex = -1`.
    - `DLG_Test_Branching` — a choice node with 2–3 options whose branches **converge** on a shared closing node (the cosmetic-branching shape from the flowchart).
-   - `DLG_Test_Monologue` — 2–3 nodes with `_speakerType = InnerMonologue` (speaker name irrelevant), mixed with at least one `Player` node to see both styles.
+   - ~~`DLG_Test_Monologue`~~ — not needed: `DLG_Test_Branching` already exercises all three speaker types (`Npc`, `Player`, `InnerMonologue`).
 4. In the sandbox scene: an NPC placeholder sprite + `Collider2D` + `NpcInteractable` (wire a test `DialogueSO` + `CH_DialogueRequested`).
 5. Canvas: dialogue panel (speaker TMP, line TMP, options container with 3 option buttons — **no Continue button**, `ClickRouter` advances on click) + `DialogueView` + `DialogueController` (wire both channels and the controller↔view refs). In `DialogueView`, set the three `SpeakerStyle` blocks (Npc / Player / InnerMonologue: text color + font style); the portrait slot may stay unwired until Irene's art lands. Option buttons get their listeners from code (`Awake`) — leave their inspector `OnClick` lists empty.
 6. Wire the `DialogueController` reference into `ClickRouter` for the world-click guard, and verify clicking through the panel no longer hits items behind it.
@@ -100,4 +101,4 @@ All manual work by Gus:
 - `Branches_Converge_BothPathsReachSharedNode` — the cosmetic-branching shape: two options lead through different line nodes into the same closing node; both traversals end identically.
 
 ## Out of scope
-Clue-for-clue exchange UI (bespoke panel, own plan), story-state-driven selection of *which* dialogue an NPC offers (plan 03 — `StoryDirector`), setting flags or any game state from dialogue (explicitly forbidden by the Aug 26 decision), `NpcSO` and portrait art/NPC movement (the view only reserves a hide-able portrait slot), typewriter or per-letter effects, dialogue audio, localization, real written lines (humans only).
+Clue-for-clue exchange UI (bespoke panel, own plan), story-state-driven selection of *which* dialogue an NPC offers (plan 04 — `StoryDirector`), setting flags or any game state from dialogue (explicitly forbidden by the Aug 26 decision), `NpcSO` and portrait art/NPC movement (the view only reserves a hide-able portrait slot), typewriter or per-letter effects, dialogue audio, localization, real written lines (humans only).

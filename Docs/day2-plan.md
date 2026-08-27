@@ -41,6 +41,17 @@ Decisions made while designing the story/dialogue systems against the story flow
 4. **Day clock is mixed:** a real-time base timer plus a time cost charged by significant actions (searching a hiding place, talking, trading a clue).
 5. **Dialogue is homemade — no Yarn Spinner / Ink.** Evaluated both (Aug 26): integration + WebGL risk isn't worth it 3 days out, and the clue-for-clue exchange is bespoke gameplay UI either way. The system is minimal dialogue graphs in ScriptableObjects with **cosmetic branching**: dialogue options change which lines you hear, never game state. This promotes the "Dialogue options" Nice-to-Have in that limited form only. The seam stays clean enough to plug Ink in post-jam.
 
+#### Amendment — Thu Aug 27 (Gus)
+
+Exchange + NPC decisions, locked while planning `Docs/plans/03-npcs-clue-exchange.md` (the story director moves to plan 04):
+
+1. **What an NPC returns is a per-NPC map** given-clue → returned-clue, plus an optional fallback for unmapped clues (the flowchart's "useless NotGrandma clue"). The Uncle's-clue → Cousin → final-evidence beat is a map entry, not code.
+2. **Sharing keeps the clue in the notebook.** Information is shared, not spent; the cost is the leak. The same clue can go to several NPCs, but **only once per NPC** — NPCs remember (C1), so no reward farming and no double leak.
+3. **Leak tracking (C1) lives in the exchange domain** (`ExchangeLog`): a clue shared with the leaker marks its room as leaked. The night patrol consumes `LeakedRooms` / the `RoomLeaked` channel — Janhavi's side never computes leaks.
+4. **NPCs get identity assets** (`NpcSO`: id, display name, portrait slot, exchange table, leak flag). The flag is on for the Uncle only, fixed.
+5. **The exchange opens as a share prompt when a conversation ends, and only after dialogues explicitly marked for it** (`DialogueSO._allowsClueExchange`, off by default). Dialogue graphs stay cosmetic; sharing is never a dialogue-node effect. Intros and story beats end with no prompt — which also keeps the trade from feeling available at moments the writing doesn't support.
+6. **NPC visual identity lives in `NpcSO`** (second pass, same day): a representative colour per character (tints their dialogue name + lines; Not Grandma's is the §C4 one-colour-nobody-else-uses) and two sprite slots — dialogue portrait and in-room world sprite. **All 4 characters get an `NpcSO`**; Not Grandma's exchange table is empty, so she never offers a trade. Dialogue nodes now reference the speaker's `NpcSO` — the per-node speaker string is removed.
+
 ---
 
 ## B. The MVP loop (Must-Have only — must exist by Wednesday)

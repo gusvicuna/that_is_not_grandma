@@ -10,8 +10,9 @@ namespace Game.Data
     {
         [SerializeField] private string _id;
         [SerializeField] private DialogueNodeData[] _nodes;
-
         public IReadOnlyList<DialogueNodeData> Nodes => _nodes;
+        [SerializeField] private bool _allowsClueExchange;
+        public bool AllowsClueExchange => _allowsClueExchange;
 
         public DialogueGraph ToGraph()
         {

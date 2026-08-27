@@ -6,16 +6,15 @@ namespace Game.Data
     [Serializable]
     public class DialogueNodeData
     {
+        [SerializeField] private NpcSO _speaker;
+        public NpcSO Speaker => _speaker;
         [SerializeField] private SpeakerType _speakerType;
-        [SerializeField] private string _speakerName;
-        [SerializeField][TextArea] private string _text;
-        [SerializeField] private DialogueOptionData[] _options;
-        [SerializeField] private int _nextIndex;
-
         public SpeakerType SpeakerType => _speakerType;
-        public string SpeakerName => _speakerName;
+        [SerializeField][TextArea] private string _text;
         public string Text => _text;
+        [SerializeField] private DialogueOptionData[] _options;
         public DialogueOptionData[] Options => _options;
+        [SerializeField] private int _nextIndex;
         public int NextIndex => _nextIndex;
     }
 }

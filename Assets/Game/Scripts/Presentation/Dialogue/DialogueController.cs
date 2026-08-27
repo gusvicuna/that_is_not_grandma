@@ -9,13 +9,17 @@ namespace Game.Presentation
     public class DialogueController : MonoBehaviour
     {
         public event Action OnNodeChanged;
+
         [SerializeField] private DialogueRequestedEventChannelSO _dialogueRequestedEventChannel;
         [SerializeField] private DialogueFinishedEventChannelSO _dialogueFinishedEventChannel;
+
         private DialogueRunner _dialogueRunner;
         private DialogueSO _currentDialogue;
         private DialogueNodeData _currentNodeData;
+
         public DialogueNodeData CurrentNodeData => _currentNodeData;
         public bool IsDialogueActive => _dialogueRunner != null;
+        public bool CurrentNodeHasOptions => IsDialogueActive && _dialogueRunner.CurrentHasOptions;
 
         private void OnEnable()
         {
@@ -41,25 +45,38 @@ namespace Game.Presentation
 
         public void AdvanceDialogue()
         {
-            if (_dialogueRunner == null)
+            if (!IsDialogueActive)
             {
                 Debug.LogWarning("No dialogue is currently running.");
                 return;
             }
-
             _dialogueRunner.Advance();
-            if (_dialogueRunner.IsFinished)
-            {
-                HandleDialogueFinished();
-            }
-            else
-            {
-                _currentNodeData = _currentDialogue.Nodes[_dialogueRunner.CurrentIndex];
-                OnNodeChanged?.Invoke();
-            }
+            SyncCurrentNode();
         }
 
-        private void HandleDialogueFinished()
+        public void ChooseOption(int optionIndex)
+        {
+            if (!IsDialogueActive)
+            {
+                Debug.LogWarning("No dialogue is currently running.");
+                return;
+            }
+            _dialogueRunner.Choose(optionIndex);
+            SyncCurrentNode();
+        }
+
+        private void SyncCurrentNode()
+        {
+            if (_dialogueRunner.IsFinished)
+            {
+                FinishDialogue();
+                return;
+            }
+            _currentNodeData = _currentDialogue.Nodes[_dialogueRunner.CurrentIndex];
+            OnNodeChanged?.Invoke();
+        }
+
+        private void FinishDialogue()
         {
             _dialogueFinishedEventChannel.Raise(_currentDialogue);
             _dialogueRunner = null;
@@ -67,26 +84,5 @@ namespace Game.Presentation
             _currentNodeData = null;
             OnNodeChanged?.Invoke();
         }
-
-        public void ChooseOption(int optionIndex)
-        {
-            if (_dialogueRunner == null)
-            {
-                Debug.LogWarning("No dialogue is currently running.");
-                return;
-            }
-
-            _dialogueRunner.Choose(optionIndex);
-            if (_dialogueRunner.IsFinished)
-            {
-                HandleDialogueFinished();
-            }
-            else
-            {
-                _currentNodeData = _currentDialogue.Nodes[_dialogueRunner.CurrentIndex];
-                OnNodeChanged?.Invoke();
-            }
-        }
-
     }
 }
