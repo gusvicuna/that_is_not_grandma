@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a18cae27dc7af7d48922d1657464b838, type: 3}
+  m_Name: NPC_Cousin
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Data.NpcSO
+  _id: cousin
+  _displayName: Cousin
+  _color: {r: 0.5294118, g: 0.8078432, b: 0.9803922, a: 1}
+  _portrait: {fileID: 0}
+  _worldSprite: {fileID: 0}
+  _leaksToNotGrandma: 0
+  _exchangeEntries:
+  - _givenClue: {fileID: 11400000, guid: a45a9a5d1462e4f4e8a581c44bceb350, type: 2}
+    _returnedClue: {fileID: 11400000, guid: 44614be636b7a774793b7b81332d9261, type: 2}
+  - _givenClue: {fileID: 11400000, guid: a1adc049f374bf044ab9338b37e959e4, type: 2}
+    _returnedClue: {fileID: 11400000, guid: 839ea222345aa3a4ab8787ba7cb93ae2, type: 2}
+  _fallbackReturnClue: {fileID: 11400000, guid: c5a5db9b0df49d64da94afde99a0e484, type: 2}

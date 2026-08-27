@@ -14,18 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.Data.DialogueSO
   _id: test branching
   _nodes:
-  - _speakerType: 0
-    _speakerName: Cousin
+  - _speaker: {fileID: 11400000, guid: 864a877dacd65e04aa31110ef2ae3534, type: 2}
+    _speakerType: 0
     _text: Hey looking good!
     _options: []
     _nextIndex: 1
-  - _speakerType: 1
-    _speakerName: Player
+  - _speaker: {fileID: 0}
+    _speakerType: 1
     _text: Really? Thanks
     _options: []
     _nextIndex: 2
-  - _speakerType: 0
-    _speakerName: Cousin
+  - _speaker: {fileID: 11400000, guid: 864a877dacd65e04aa31110ef2ae3534, type: 2}
+    _speakerType: 0
     _text: How do I look?
     _options:
     - _text: You look good!
@@ -33,23 +33,24 @@ MonoBehaviour:
     - _text: Emm...
       _targetIndex: 4
     _nextIndex: 2
-  - _speakerType: 0
-    _speakerName: Cousin
+  - _speaker: {fileID: 11400000, guid: 864a877dacd65e04aa31110ef2ae3534, type: 2}
+    _speakerType: 0
     _text: Thanks!
     _options: []
     _nextIndex: 6
-  - _speakerType: 0
-    _speakerName: Cousin
+  - _speaker: {fileID: 11400000, guid: 864a877dacd65e04aa31110ef2ae3534, type: 2}
+    _speakerType: 0
     _text: Ok. No need to be so harsh.
     _options: []
     _nextIndex: 5
-  - _speakerType: 2
-    _speakerName: PLayer
+  - _speaker: {fileID: 0}
+    _speakerType: 2
     _text: Oh. That might have affected her..
     _options: []
     _nextIndex: 6
-  - _speakerType: 0
-    _speakerName: Cousin
-    _text: Anyway, I have to go. Bye!
+  - _speaker: {fileID: 11400000, guid: 864a877dacd65e04aa31110ef2ae3534, type: 2}
+    _speakerType: 0
+    _text: Anyway, Do you have something for me?
     _options: []
     _nextIndex: -1
+  _allowsClueExchange: 1
