@@ -52,6 +52,18 @@ Exchange + NPC decisions, locked while planning `Docs/plans/03-npcs-clue-exchang
 5. **The exchange opens as a share prompt when a conversation ends, and only after dialogues explicitly marked for it** (`DialogueSO._allowsClueExchange`, off by default). Dialogue graphs stay cosmetic; sharing is never a dialogue-node effect. Intros and story beats end with no prompt — which also keeps the trade from feeling available at moments the writing doesn't support.
 6. **NPC visual identity lives in `NpcSO`** (second pass, same day): a representative colour per character (tints their dialogue name + lines; Not Grandma's is the §C4 one-colour-nobody-else-uses) and two sprite slots — dialogue portrait and in-room world sprite. **All 4 characters get an `NpcSO`**; Not Grandma's exchange table is empty, so she never offers a trade. Dialogue nodes now reference the speaker's `NpcSO` — the per-node speaker string is removed.
 
+#### Amendment — Thu Aug 27 (Gus), audio pass
+
+Locked while planning `Docs/plans/05-audio-music.md` (Tuesday's audio foundation and Thursday's music layers merged into a single plan):
+
+1. **One audio plan, whole stack:** AudioMixer buses, WebGL first-click unlock, per-room ambience crossfade, three music layers, an SFX router and a persisted volume panel ship together.
+2. **Tension reaches audio through `TensionChangedEventChannelSO(TensionLevel)`**, raised later by the night patrol (Janhavi) and the `StoryDirector` (plan 04). Audio never queries the patrol.
+3. **`RoomChangedEventChannelSO(RoomId)` is defined by the audio plan** as the contract room navigation must raise. Ambience only listens.
+4. **The lie music layer is never triggered by `RoomLeaked`.** The leak fires only for the Uncle, so an audible leak would hand the player the traitor on the first trade. The layer is pulsed by conversations explicitly marked `DialogueSO._playsLieMotif` — authored, deliberately ambiguous, and off by default.
+5. **Music is stems that never stop:** all layers start together on unlock and only their volume moves. No `PlayScheduled`, no `dspTime` — WebGL sync risk removed.
+6. **The volume settings panel is a standalone prefab** built now (GDD §8 pre-upload checklist) and re-parented into the pause menu when those screens exist.
+7. **No audio middleware, and the reason is the platform** (`Docs/research/audio-tooling.md`): on Web the AudioMixer only changes volume — no snapshots, no DSP — and Wwise has no WebGL support at all. FMOD is the post-jam upgrade path, not a jam-week one. Two tools we *do* adopt: `ObjectPool<AudioSource>` and a timeboxed spike of Unity 6's Audio Random Container. Content consequence: a muffled "hiding under the bed" sound must be a recorded clip, not a lowpass filter.
+
 ---
 
 ## B. The MVP loop (Must-Have only — must exist by Wednesday)
