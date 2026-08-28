@@ -6,7 +6,7 @@ Context file for Claude Code. Read this before doing anything in this repo.
 
 Point-and-click mystery for **Brackeys Game Jam 2026.2** (theme: *Trust No One*). Jam runs Aug 23–30, 2026; upload deadline **Sun Aug 30, 10:00** (verify Chilean local time), build must be on itch.io ≥2h before. **WebGL is the primary target.**
 
-Premise: the protagonist's grandma has been replaced by a doppelgänger. Gather clues by day, trade clues with family NPCs, survive the night while Not Grandma patrols, then call the police with the right evidence. One of the NPCs (the **Uncle — fixed, never randomized**) secretly leaks every clue you share with him to Not Grandma, which biases her night patrol. The player is never told who the ally is.
+Premise: the protagonist's grandma has been replaced by a doppelgänger. Gather clues by day, trade clues with family NPCs, hide before nightfall in a room you never talked about, then call the police with the right evidence. One of the NPCs (the **Uncle — fixed, never randomized**) secretly leaks every clue you share with him to Not Grandma; hide in a leaked room and you don't see the morning. The player is never told who the ally is.
 
 - **Team:** Gus (engineering, audio, final design call), Janhavi (gameplay dev), Irene (art).
 
@@ -17,7 +17,9 @@ Premise: the protagonist's grandma has been replaced by a doppelgänger. Gather 
 | `Docs/GDD.md` | Full game design document (snapshot of the team's Google Doc). Mantra, pillars, story, core loop, features table, art & audio direction, win/lose. |
 | `Docs/day2-plan.md` | Scope cuts and decisions locked on Aug 24. **Authoritative where it disagrees with the GDD.** |
 
-Locked scope: **4 rooms** (Kitchen, Living room, Bedroom, Bathroom), **4 characters** (Not Grandma, Mother, Uncle, Cousin), 1 day + 1 night, 2 hiding spots (under bed, closet), 2 police "lives", one 8–12 min run.
+Locked scope: **4 rooms** (Kitchen, Living room, Bedroom, Bathroom), **4 characters** (Not Grandma, Mother, Uncle, Cousin), a **day → night → day loop** capped at 3 days, **4 hiding spots** (one per room), 2 police "lives", one 8–12 min run.
+
+**The night (revised Aug 28):** there is no patrol. The day runs on a clock; the player must be inside a hiding spot before it expires. Too late → lose. Hid in a room whose clues leaked to the Uncle → lose. Otherwise they survive to the next morning, where the **phone** appears as an activatable item that opens the police-call UI — one call per day, available all day. Leaked rooms accumulate for the whole run and never reset, so safe hiding places run out as the days pass.
 
 `Docs/GDD.md` is a copy — the team edits the Google Doc. If Gus mentions a design change that isn't in these files, update them as part of the feature work.
 
@@ -86,7 +88,7 @@ Events (SO event channels)  +  Data (SO data assets)
 Domain (pure C#, NO UnityEngine — except attributes like [Serializable])
 ```
 
-- **Domain** — game rules as plain C#: clue graph, leak tracking, police trust, patrol bias, day/night state machine. Deterministic, constructor-injected, fully testable without a scene. Randomness enters via an injected `System.Random` or interface.
+- **Domain** — game rules as plain C#: clue graph, leak tracking, police trust, the night resolution check, day/night state machine. Deterministic, constructor-injected, fully testable without a scene. Randomness enters via an injected `System.Random` or interface.
 - **Data** — `ScriptableObject`s as immutable-at-runtime content: `ClueSO`, `NpcSO`, `RoomSO`, dialogue references. Data, not behaviour.
 - **Events** — ScriptableObject event channels (below). The only way Presentation components talk to each other.
 - **Presentation** — thin MonoBehaviours that translate input/engine callbacks into domain calls, and domain results into visuals/audio. No game rules here.
@@ -147,7 +149,7 @@ Rules: raisers and listeners reference the channel via `[SerializeField]`, wired
 
 - **Branching:** feature branches off `dev`, PRs to merge back into `dev`. Branch naming: `feature/short-description` (e.g. `feature/clue-collection`, `feature/night-patrol`). Never commit directly to `main` or `dev`.
 - **PR flow:** once a feature branch is ready (tests green, editor setup done), open a PR into `dev`. Claude can help draft the PR description when asked.
-- **Commit style:** small, frequent commits; message format `area: what changed` (e.g. `night: patrol bias by leaked rooms`).
+- **Commit style:** small, frequent commits; message format `area: what changed` (e.g. `night: lose when hiding in a leaked room`).
 - Unity `.gitignore` is set up; never commit `Library/`, `Temp/`, `Logs/`, `UserSettings/`, generated `.csproj`/`.slnx`.
 - Art goes through Git LFS once configured — check before committing large binaries.
 

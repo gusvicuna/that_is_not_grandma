@@ -66,9 +66,11 @@ Sneak around the house, avoid the **Doppelgänger**, and find out where they too
    - Increase their trust in you.
 3. **Observe the reaction** of the exchange.
    - New items may appear in the house · Not Grandma may change behaviour · members may move rooms · members may change attitude toward you.
-4. **Hide from Not Grandma until the night ends.**
-   - Rooms the player can lock · places to hide · other members with enough trust to help you hide.
-5. **Optionally call the police** to accuse a family member, presenting evidence.
+4. **Beat the clock into a hiding spot** *(revised Aug 28 — the patrol is cut)*.
+   - The day runs on a clock. Be inside a hiding spot before it expires, in a room whose clues you never handed to the wrong person.
+   - Too late → lose. Hiding in a **leaked** room → lose. Otherwise you wake up the next morning.
+   - Nice-to-Have, unchanged: rooms the player can lock · members with enough trust to help you hide.
+5. **Optionally call the police** to accuse a family member, presenting evidence — from the **phone item**, which appears the morning after the first night and can be used **once per day** *(Aug 28)*.
    - Not enough evidence → lose 1 police trust. No trust left → lose the game.
    - Enough evidence → that member is taken from the house:
      - An **ally of yours** → game gets harder, Not Grandma's behaviour escalates.
@@ -101,11 +103,11 @@ Sneak around the house, avoid the **Doppelgänger**, and find out where they too
 | Player navigation in the house (Input System click) | Calling the police accusing *any* NPC, with evidence and consequences |
 | Player interaction with items (Input System click): activate text or gather clues | Cutscenes |
 | Movement of NPCs, Not Grandma and items around the house | Dialogue options — *promoted Aug 26 as cosmetic branching only: options change which lines play, never game state* |
-| Calling the police selecting evidence (**Not Grandma as the only suspect for now**) | Traitor changes between runs |
+| Calling the police selecting evidence (**Not Grandma as the only suspect for now**) — via the **phone item**, available from the second morning, **one call per day** — *Aug 28* | Traitor changes between runs |
 | Police trust (like lives) | |
-| Time system for day/night (mixed: real-time base + per-action time costs — *Aug 26*) | |
-| Night — hideable places (Input System click) | |
-| Night — Not Grandma behaviour | |
+| Time system for day/night (mixed: real-time base + per-action time costs — *Aug 26*); the run **loops** day → night → day until win or loss — *Aug 28* | |
+| Night — hideable places (Input System click), **one per room, 4 total** — *Aug 28* | |
+| ~~Night — Not Grandma behaviour~~ → **Night resolution check** (too late = lose · leaked room = lose · else survive). The patrol is **cut** — *Aug 28* | |
 | Night — losing | |
 | Audio system | |
 
@@ -126,6 +128,7 @@ Sneak around the house, avoid the **Doppelgänger**, and find out where they too
   - *UI/GUI*: low-resolution illustration, simple animations (locked palette).
 - **Original scope (pre-cut):** 5 characters, 7 backgrounds, 3 hiding spots — Grandma ✅, Not Grandma ✅, Uncle, Cousin, Mother · Kitchen, Living room, Bedroom, Study, Bathroom, Garden · Door (multi-frame open/close) · hiding under bed / in closet / in shower · cursor (regular, click, turn left, turn right).
   - **Cut (day 2, revised Aug 25):** Study and **Garden** rooms, shower hiding spot. The 4 shipping rooms are Kitchen, Living room, Bedroom, **Bathroom**. Real Grandma appears only in the win screen (static, no walk cycle).
+  - **Added back (Aug 28):** **one hiding spot per room, 4 total** — the night check is per-room, so two spots made the choice a coin flip. Two more hiding-spot pieces for Irene (Kitchen and Living room); Not Grandma needs **no night walk cycle** now that the patrol is cut, which more than pays for them.
 - **Visual language of deception (proposal, day-2 plan §C4):** every character uses the locked palette, but **Not Grandma uses one colour nobody else in the house uses** — subtle, never explained.
 
 ## 8. Sound & Music — Gus
@@ -140,8 +143,9 @@ Sneak around the house, avoid the **Doppelgänger**, and find out where they too
 ## 9. Win / Lose Conditions
 
 - **Win:** the player calls the police with enough evidence to arrest Not Grandma.
-- **Lose:** Not Grandma catches you at night, **or** the police lose all trust in your calls.
-- **Session length:** 8–12 min (day-2 decision).
+- **Lose:** *(revised Aug 28)* the day clock expires while you're not hiding · you spend the night in a room whose clues leaked to the Uncle · the police lose all trust in your calls.
+- **Structure:** the run **loops** day → hide → night → morning. The phone arrives on the second morning and allows **one call per day**, so with 2 police lives a run tops out at 3 days *(Aug 28)*.
+- **Session length:** 8–12 min (day-2 decision) — still the target across the whole loop, not per day.
 - **Police lives:** 2 wrong accusations, the third is a loss (day-2 decision).
 - **Replayability:** randomized traitor is Nice-to-Have only.
 
