@@ -148,8 +148,28 @@ Rules: raisers and listeners reference the channel via `[SerializeField]`, wired
 - **Branching:** feature branches off `dev`, PRs to merge back into `dev`. Branch naming: `feature/short-description` (e.g. `feature/clue-collection`, `feature/night-patrol`). Never commit directly to `main` or `dev`.
 - **PR flow:** once a feature branch is ready (tests green, editor setup done), open a PR into `dev`. Claude can help draft the PR description when asked.
 - **Commit style:** small, frequent commits; message format `area: what changed` (e.g. `night: lose when hiding in a leaked room`).
-- Unity `.gitignore` is set up; never commit `Library/`, `Temp/`, `Logs/`, `UserSettings/`, generated `.csproj`/`.slnx`.
+- Unity `.gitignore` is set up; never commit `Library/`, `Temp/`, `Logs/`, `UserSettings/`, generated `.csproj`/`.slnx`. The single hand-written exception is `CI/DomainTests/DomainTests.csproj`, kept alive by a `!/CI/**/*.csproj` negation at the bottom of `.gitignore`.
 - Art goes through Git LFS once configured — check before committing large binaries.
+
+### CI and branch protection
+
+`.github/workflows/tests.yml` runs on every PR into `dev` or `main`. Job name — and therefore the required-check name — is **`EditMode domain tests`**; the whole pipeline takes ~25 s.
+
+It does **not** run Unity. `CI/DomainTests/DomainTests.csproj` is a shadow project outside `Assets/` that compiles `Assets/Game/Scripts/Domain/**` plus `Assets/Tests/Editor/**` and runs them with `dotnet test` — no Unity licence, no Docker image. NUnit is pinned to **3.14.0** to match Unity Test Framework 1.7; NUnit 4 moved the classic asserts to `ClassicAssert` and would drift from what the editor's Test Runner does.
+
+Two consequences worth knowing:
+
+- The shadow project cannot reference Unity, so it also enforces the Domain purity rule — add `using UnityEngine;` anywhere under `Domain/` and CI goes red.
+- It covers **only** Domain. Presentation, Data and Events still compile in the editor alone, so a broken MonoBehaviour can merge green.
+
+Protection is deliberately asymmetric right now:
+
+| Branch | Rules |
+|---|---|
+| `main` | Ruleset `main protection`: PR required (0 approvals), `EditMode domain tests` must pass, no force-push, no deletion. No bypass actors — the owner is not exempt either. |
+| `dev` | None. A red PR can still be merged; the ✗ is advisory. |
+
+`dev` is left open while `PoliceCaseTests` is red (`PoliceCase` is a not-yet-implemented red test from `plan: police call`). Once the suite is green, the same ruleset should be applied to `dev`.
 
 ## Priorities when in doubt
 
