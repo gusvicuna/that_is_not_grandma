@@ -4,8 +4,8 @@ using Game.Domain;
 namespace Game.Events
 {
     /// <summary>
-    /// Defined by plan 06 (police call) and written here because plan 04's night check needs it
-    /// first. Same file name, same payload — do not write a second one when plan 06 merges.
+    /// Every way the run can end badly arrives here: the police losing patience (plan 06) and both
+    /// ways to lose a night (plan 04). The LossReason is the shared vocabulary between them.
     /// </summary>
     [CreateAssetMenu(fileName = "CH_GameLost", menuName = "Game/Events/Game Lost")]
     public class GameLostEventChannelSO : EventChannelSO<LossReason> { }

@@ -32,6 +32,12 @@ namespace Game.Presentation
 
         private void Awake()
         {
+            if (!Wiring.Require(this, _binder, nameof(_binder)))
+            {
+                enabled = false;
+                return;
+            }
+
             var beats = new List<StoryBeat>();
             foreach (StoryBeatSO beatSo in _beats)
             {

@@ -11,6 +11,7 @@ namespace Game.Presentation
         [SerializeField] private DialogueController _dialogueController;
         [SerializeField] private ExchangeController _exchangeController;
         [SerializeField] private HideConfirmView _hideConfirmView;
+        [SerializeField] private NightSequenceView _nightSequenceView;
         [SerializeField] private ItemInspectPopup _itemInspectPopup;
 
         private void OnEnable()
@@ -45,6 +46,10 @@ namespace Game.Presentation
             // The hide prompt is a modal: without this the raycast underneath keeps firing and the
             // player can collect a clue through the panel.
             if (_hideConfirmView != null && _hideConfirmView.IsOpen)
+            {
+                return;
+            }
+            if (_nightSequenceView != null && _nightSequenceView.IsPlaying)
             {
                 return;
             }

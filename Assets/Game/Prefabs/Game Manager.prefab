@@ -45,15 +45,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b8f359ac6e1efb4c8009f4d24ef0ac5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Presentation.DayNightCycle
-  _secondsPerDay: 180
+  _secondsPerDay: 50
   _talkCost: 8
   _shareCost: 12
   _clueCost: 5
+  _minimumSecondsAfterAction: 5
   _pauseWhileDialogueOpen: 1
   _startDayOnStart: 1
+  _exchangeController: {fileID: 2077834116845280953}
+  _itemInspectPopup: {fileID: 0}
   _dayStarted: {fileID: 11400000, guid: 0b4fc967165465c49b267009e5e2f5a5, type: 2}
   _nightStarted: {fileID: 11400000, guid: 309cb270ce0ebc6488cd2f7776c8b45a, type: 2}
   _nightResolved: {fileID: 11400000, guid: ce2fcfc381f9c1c419075c1b9878c4e7, type: 2}
+  _nightSequenceFinished: {fileID: 11400000, guid: 6c5b25c807425ae4aa132d36f39979a6, type: 2}
   _dialogueRequested: {fileID: 11400000, guid: 2c2f8eed39fb2cd4eac93a54c981a8a0, type: 2}
   _dialogueFinished: {fileID: 11400000, guid: 3a93570ec78c46a44aea9429b557fad3, type: 2}
   _clueShared: {fileID: 11400000, guid: 7b66c06f6fdab9440bbb5d39256d3e43, type: 2}
@@ -121,7 +125,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23d16e7ca7270024dab4a638f48ac175, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Presentation.StoryDirectorBehaviour
-  _beats: []
+  _beats:
+  - {fileID: 11400000, guid: 97c2e76b2e79e664082728304b4db09a, type: 2}
   _binder: {fileID: 6921785084632154022}
   _clueCollected: {fileID: 11400000, guid: 71308b7d6c0f02e4cb244720c3dec9ef, type: 2}
   _itemInspected: {fileID: 11400000, guid: a307042258a4664428942a8c60e05831, type: 2}
@@ -142,12 +147,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ba7036f59d420e4db573fb9de171e5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Presentation.StorySceneBinder
-  _actors: []
+  _actors:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   _npcs: []
   _dialogueRequested: {fileID: 11400000, guid: 2c2f8eed39fb2cd4eac93a54c981a8a0, type: 2}
   _tensionChanged: {fileID: 11400000, guid: 5fad66bbaefb6f84196113f1061275a3, type: 2}
   _dialogueController: {fileID: 1502121097326250798}
   _exchangeController: {fileID: 2077834116845280953}
+  _policeCallController: {fileID: 2363354097349211094}
 --- !u!1 &4754780154551717722
 GameObject:
   m_ObjectHideFlags: 0
@@ -282,6 +297,8 @@ MonoBehaviour:
   _dialogueController: {fileID: 1502121097326250798}
   _exchangeController: {fileID: 2077834116845280953}
   _hideConfirmView: {fileID: 0}
+  _nightSequenceView: {fileID: 0}
+  _itemInspectPopup: {fileID: 0}
 --- !u!1 &6502705628702187347
 GameObject:
   m_ObjectHideFlags: 0

@@ -23,6 +23,14 @@ namespace Game.Presentation
 
         public IReadOnlyCollection<RoomId> LeakedRooms => _leakedRooms;
 
+        private void Awake()
+        {
+            Wiring.Require(this, _nightStarted, nameof(_nightStarted));
+            Wiring.Require(this, _nightResolved, nameof(_nightResolved));
+            Wiring.Require(this, _gameLost, nameof(_gameLost));
+            Wiring.Require(this, _roomLeaked, nameof(_roomLeaked));
+        }
+
         private void OnEnable()
         {
             if (_nightStarted != null) _nightStarted.Raised += OnNightStarted;

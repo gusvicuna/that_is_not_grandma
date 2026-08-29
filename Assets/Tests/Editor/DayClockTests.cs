@@ -7,6 +7,7 @@ namespace Game.Tests.Editor
     public class DayClockTests
     {
         private const float SecondsPerDay = 180f;
+        private const float MinimumAfterSpend = 5f;
         private const float Tolerance = 0.0001f;
 
         private DayClock _clock;
@@ -87,6 +88,64 @@ namespace Game.Tests.Editor
             _clock.Tick(SecondsPerDay / 2f);
 
             Assert.That(_clock.NormalizedRemaining, Is.EqualTo(0.5f).Within(Tolerance));
+        }
+
+        [Test]
+        public void Ctor_NegativeMinimumAfterSpend_Throws()
+        {
+            Assert.That(() => new DayClock(SecondsPerDay, -1f), Throws.TypeOf<ArgumentOutOfRangeException>());
+        }
+
+        [Test]
+        public void Ctor_MinimumAfterSpendNotBelowTheDay_Throws()
+        {
+            Assert.That(
+                () => new DayClock(SecondsPerDay, SecondsPerDay),
+                Throws.TypeOf<ArgumentOutOfRangeException>());
+        }
+
+        [Test]
+        public void Spend_WouldDropBelowFloor_StopsAtTheFloor()
+        {
+            var clock = new DayClock(SecondsPerDay, MinimumAfterSpend);
+            clock.Tick(SecondsPerDay - 8f);
+
+            clock.Spend(12f);
+
+            Assert.That(clock.Remaining, Is.EqualTo(MinimumAfterSpend).Within(Tolerance));
+            Assert.That(clock.IsExpired, Is.False);
+        }
+
+        [Test]
+        public void Spend_AlreadyBelowFloor_GivesNoTimeBack()
+        {
+            var clock = new DayClock(SecondsPerDay, MinimumAfterSpend);
+            clock.Tick(SecondsPerDay - 2f);
+
+            clock.Spend(12f);
+
+            Assert.That(clock.Remaining, Is.EqualTo(2f).Within(Tolerance));
+        }
+
+        [Test]
+        public void Spend_WellAboveFloor_ChargesTheFullCost()
+        {
+            var clock = new DayClock(SecondsPerDay, MinimumAfterSpend);
+
+            clock.Spend(12f);
+
+            Assert.That(clock.Remaining, Is.EqualTo(SecondsPerDay - 12f).Within(Tolerance));
+        }
+
+        [Test]
+        public void Tick_WithAFloorSet_StillReachesZero()
+        {
+            var clock = new DayClock(SecondsPerDay, MinimumAfterSpend);
+
+            clock.Tick(SecondsPerDay);
+
+            Assert.That(clock.Remaining, Is.EqualTo(0f).Within(Tolerance));
+            Assert.That(clock.IsExpired, Is.True);
         }
 
         [Test]

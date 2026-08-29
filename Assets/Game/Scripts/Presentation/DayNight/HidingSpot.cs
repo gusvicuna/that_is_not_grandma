@@ -19,6 +19,13 @@ namespace Game.Presentation
         [Tooltip("Hiding ends the day on the spot instead of waiting the clock out inside a wardrobe.")]
         [SerializeField] private bool _hidingEndsDayImmediately = true;
 
+        private void Awake()
+        {
+            Wiring.Require(this, _playerHid, nameof(_playerHid));
+            Wiring.Require(this, _dayNightCycle, nameof(_dayNightCycle));
+            Wiring.Require(this, _hideConfirmView, nameof(_hideConfirmView));
+        }
+
         public void Interact()
         {
             if (_hideConfirmView == null)

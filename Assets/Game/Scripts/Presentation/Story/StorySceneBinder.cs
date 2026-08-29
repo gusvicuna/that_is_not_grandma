@@ -26,7 +26,8 @@ namespace Game.Presentation
         [Header("Modal state (the dialogue queue waits on these)")]
         [SerializeField] private DialogueController _dialogueController;
         [SerializeField] private ExchangeController _exchangeController;
-        // When plan 06 merges, add its PoliceCallController here and check IsCallPanelActive in IsBusy.
+        [Tooltip("The call panel stays open after the verdict so the player can read it.")]
+        [SerializeField] private PoliceCallController _policeCallController;
 
         private readonly Queue<DialogueSO> _pendingDialogues = new();
         private StoryDirector _director;
@@ -35,6 +36,12 @@ namespace Game.Presentation
         public void Bind(StoryDirector director)
         {
             _director = director;
+        }
+
+        private void Awake()
+        {
+            Wiring.Require(this, _dialogueRequested, nameof(_dialogueRequested));
+            Wiring.Require(this, _tensionChanged, nameof(_tensionChanged));
         }
 
         public void Apply(StoryBeatSO beat)
@@ -72,7 +79,11 @@ namespace Game.Presentation
                 {
                     return true;
                 }
-                return _exchangeController != null && _exchangeController.IsExchangeActive;
+                if (_exchangeController != null && _exchangeController.IsExchangeActive)
+                {
+                    return true;
+                }
+                return _policeCallController != null && _policeCallController.IsCallPanelActive;
             }
         }
 
