@@ -1,12 +1,9 @@
 using UnityEngine;
-using TMPro;
-public class PoliceCall : MonoBehaviour
+using Game.Domain;
+public class Rooms : MonoBehaviour
 {
-    public TMP_Text dialogueText;
-    private void OnMouseDown(){
-        Debug.Log("Calling the police....");
-        dialogueText.text="Police Department: How I can help you";
-    }
+    [SerializeField]private string roomName;
+    public string RoomName => roomName;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
