@@ -10,7 +10,7 @@
 
 | # | Decision |
 |---|---|
-| 1 | **Scope: 1 day + 1 night, 3 NPCs, 4 rooms.** One 8–12 min run. |
+| 1 | **Scope: 1 day + 1 night, 3 NPCs, 4 rooms.** One 8–12 min run. — *superseded Aug 28: the run loops day → night → day until win or loss, ceiling 3 days. Everything else stands, including the 8–12 min target.* |
 | 2 | **Delivery: WebGL first.** Windows build only if there's spare time on day 7. |
 | 3 | **Final design call: Gus.** Ties get broken same day. |
 | 4 | **Audio direction: quiet house + tension layers.** Near-silent ambience (clock, pipes, distant TV); music enters as layers when Not Grandma approaches or when someone lies to you. |
@@ -22,8 +22,8 @@
 
 - Rooms: **4** — Kitchen, Living room, Bedroom, Bathroom. (Study and Garden cut. Bedroom holds the under-bed hiding spot.)
 - Characters: **4** — Not Grandma, Mother, Uncle, Cousin. (Real Grandma appears only in the win screen, static, no walk cycle.)
-- Hiding spots: **2** — under the bed, closet. (The shower stays cut even though the bathroom is back in — hiding spots are locked at 2.)
-- Days: **1 day + 1 night.** No multi-day progression, no NPC behaviour changing across days.
+- Hiding spots: ~~**2** — under the bed, closet~~ → **4, one per room** *(revised Aug 28)*. The night check is per-room, so two spots made it a coin flip.
+- Days: ~~**1 day + 1 night**~~ → **a day/night loop, ceiling 3 days** *(revised Aug 28)*. Still no NPC behaviour changing across days — the only thing that carries over is the leaked-rooms set and the police calls spent.
 
 #### Amendment — Tue Aug 25 (Gus)
 
@@ -52,7 +52,22 @@ Exchange + NPC decisions, locked while planning `Docs/plans/03-npcs-clue-exchang
 5. **The exchange opens as a share prompt when a conversation ends, and only after dialogues explicitly marked for it** (`DialogueSO._allowsClueExchange`, off by default). Dialogue graphs stay cosmetic; sharing is never a dialogue-node effect. Intros and story beats end with no prompt — which also keeps the trade from feeling available at moments the writing doesn't support.
 6. **NPC visual identity lives in `NpcSO`** (second pass, same day): a representative colour per character (tints their dialogue name + lines; Not Grandma's is the §C4 one-colour-nobody-else-uses) and two sprite slots — dialogue portrait and in-room world sprite. **All 4 characters get an `NpcSO`**; Not Grandma's exchange table is empty, so she never offers a trade. Dialogue nodes now reference the speaker's `NpcSO` — the per-node speaker string is removed.
 
-#### Amendment — Thu Aug 27 (Gus), audio pass
+#### Amendment — Fri Aug 28 (Gus): the night becomes a single check, and the run loops
+
+**This is a scope cut wearing a design hat, and it's the right one two days from close.** Not Grandma's room-to-room night patrol is **cut**. What replaces it costs a fraction to build and keeps the theme's consequence intact:
+
+1. **The night is one decision and one check.** The day runs on a clock; before it expires the player must be hiding in a hiding spot. Then:
+   - didn't make it in time → **lose**;
+   - hid in a room whose clues **leaked** to the Uncle → **lose** (she knew where to look);
+   - otherwise → **survive to the next morning**.
+   No patrol, no room-to-room AI, no night navigation. The leak stops biasing a patrol and simply *decides the night*, which makes C1 sharper, not weaker: the player learns who the traitor is by dying in the room they told him about.
+2. **The run loops: day → hide → night → day…** until the player wins (right accusation), loses a night, or burns the third police call. This supersedes decision A1's "1 day + 1 night".
+3. **The phone is an item, from the second morning on.** It appears in the house on the morning after the first night, is clickable all day long, and opens the police-call UI. **One call per day.** With 2 police lives, the natural ceiling is a 3-day run.
+4. **Leaked rooms accumulate across the whole run**, never reset. `ExchangeLog` is unchanged — every clue handed to the Uncle burns its room as a hiding place *permanently*. Safe rooms run out as the days pass; that curve is the game's difficulty.
+5. **Hiding spots go from 2 to 4 — one per room.** With only two, a night where both are leaked is an unavoidable death the player couldn't see coming. With one per room the player chooses among four rooms knowing exactly which ones they compromised. Cost: two more hiding-spot art pieces (Irene); the system is identical.
+6. **Consequences for the schedule:** Janhavi's Wednesday patrol task is dead — that time goes to the police-call UI and the phone item. NPC movement between rooms is no longer needed for the night either.
+
+#### Amendment — Fri Aug 28 (Gus), audio pass
 
 Locked while planning `Docs/plans/05-audio-music.md` (Tuesday's audio foundation and Thursday's music layers merged into a single plan):
 
@@ -62,7 +77,19 @@ Locked while planning `Docs/plans/05-audio-music.md` (Tuesday's audio foundation
 4. **The lie music layer is never triggered by `RoomLeaked`.** The leak fires only for the Uncle, so an audible leak would hand the player the traitor on the first trade. The layer is pulsed by conversations explicitly marked `DialogueSO._playsLieMotif` — authored, deliberately ambiguous, and off by default.
 5. **Music is stems that never stop:** all layers start together on unlock and only their volume moves. No `PlayScheduled`, no `dspTime` — WebGL sync risk removed.
 6. **The volume settings panel is a standalone prefab** built now (GDD §8 pre-upload checklist) and re-parented into the pause menu when those screens exist.
-7. **No audio middleware, and the reason is the platform** (`Docs/research/audio-tooling.md`): on Web the AudioMixer only changes volume — no snapshots, no DSP — and Wwise has no WebGL support at all. FMOD is the post-jam upgrade path, not a jam-week one. Two tools we *do* adopt: `ObjectPool<AudioSource>` and a timeboxed spike of Unity 6's Audio Random Container. Content consequence: a muffled "hiding under the bed" sound must be a recorded clip, not a lowpass filter.
+7. **No audio middleware, and the reason is the platform** (`Docs/research/audio-tooling.md`): on Web the AudioMixer only changes volume — no snapshots, no DSP — and Wwise has no WebGL support at all. FMOD is the post-jam upgrade path, not a jam-week one. The one tool we *do* adopt is `ObjectPool<AudioSource>`; Unity 6's Audio Random Container was a spike candidate, **dropped Aug 28 without running** — its WebGL support is undocumented and an ambiguous result costs more than the code it saves. Content consequence: a muffled "hiding under the bed" sound must be a recorded clip, not a lowpass filter.
+
+#### Amendment — Fri Aug 28 (Gus), police call handed to Janhavi
+
+Locked while planning `Docs/plans/06-police-call.md` (Janhavi implements it end to end, code **and** editor setup):
+
+1. **The phone is a clickable item wired to `IInteractable`/`ClickRouter`**, not an NPC and not `OnMouseDown`. It shows itself only from the second morning and forwards the click to a `PoliceCallController`; every rule lives in a pure-C# `PoliceCase` (availability, one call per day, trust, resolution).
+2. **The day number gets a channel before it gets a system: `DayStartedEventChannelSO(int)`.** Plan 06 defines it and ships a temporary `DebugDayAdvancer` button that raises it; when the `StoryDirector` (plan 04) lands, Gus points it at the same asset and the debug button dies. Nobody writes a second day counter.
+3. **The end of the run gets two channels now:** `GameWonEventChannelSO` (void) and `GameLostEventChannelSO(LossReason)`, with `LossReason` covering `PoliceTrustLost`, `HidInLeakedRoom` and `DayClockExpired`. The night check will raise the same `GameLost` channel — the enum is the shared vocabulary.
+4. **Correct evidence = any `ClueSO` with `IsEvidence` on.** The Domain only ever sees a `bool`; which clue is the evidence stays content.
+5. **The police panel is a *copy* of `ClueSharePanelView`, not a generalization of it.** Duplicating ~80 lines of view code is cheaper than an abstraction two days from close, and it keeps Janhavi's branch out of Gus's exchange code. Merging them is a post-jam cleanup.
+6. **The police intro reuses the dialogue system unchanged** — a `DialogueSO` spoken by an `NPC_Police` `NpcSO`, with `_allowsClueExchange` off. The controller opens the call panel on `DialogueFinished` only when the finished dialogue is its own.
+7. **Police trust starts at 2**, serialized on the controller. The GDD §7 phrasing ("2 wrong accusations, the third is a loss") would be 3 — it is one number in the Inspector if Gus changes his mind.
 
 ---
 
@@ -70,11 +97,13 @@ Locked while planning `Docs/plans/05-audio-music.md` (Tuesday's audio foundation
 
 ```
 Navigate room (click) → Interact with objects → Collect clue into notebook
-   → Talk to an NPC, trade a clue for a clue
-   → NIGHT: Not Grandma patrols, hide until morning
-   → Accuse Not Grandma to the police with selected evidence
-   → Right evidence = win · Wrong = lose police trust · Caught at night = lose
+   → Talk to an NPC, trade a clue for a clue (the trade leaks that clue's room)
+   → Beat the day clock into a hiding spot
+   → NIGHT resolves: too late = lose · leaked room = lose · else survive
+   → NEXT MORNING: the phone is available, one police call per day
+   → Right evidence = win · Wrong = lose police trust · 3rd wrong = lose
 ```
+*(revised Aug 28 — the patrol is gone; the night is a single check.)*
 
 Everything in GDD §4 not on that line — clue combining, inventory items, favors, locking rooms, asking NPCs for help at night, accusing anyone other than Not Grandma — is **Nice-to-Have**.
 
@@ -88,9 +117,11 @@ The features table has information exchange, but **nothing that makes sharing wi
 
 Cheapest version that makes the theme real, needing no trust system:
 
-> One of the three NPCs is Not Grandma's ally. Every clue you give an NPC gets **remembered**. At nightfall, Not Grandma patrols with knowledge of the rooms whose clues reached the ally — she checks those rooms first and lingers there. The player is never told who the ally is; they infer it from where she hunts.
+> One of the three NPCs is Not Grandma's ally. Every clue you give an NPC gets **remembered**. At nightfall, Not Grandma knows the rooms whose clues reached the ally — hide in one of them and she finds you. The player is never told who the ally is; they infer it from where they died.
 
-One boolean per NPC and one list of "leaked rooms" feeding the night patrol. **Promoted to Must-Have.**
+One boolean per NPC and one list of "leaked rooms" resolving the night. **Promoted to Must-Have.**
+
+*(revised Aug 28: the leak no longer biases a patrol, it decides the night outright. Same data, less code, sharper lesson — and it accumulates across days, so the safe rooms run out.)*
 
 ### C2. Who is the ally — ✅ RESOLVED: the Uncle, fixed
 

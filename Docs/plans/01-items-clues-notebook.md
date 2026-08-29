@@ -26,7 +26,7 @@ Namespace `Game.Data`, in `Assets/Game/Scripts/Data/`. Data only, no behaviour. 
 - `ClueSO` — `[CreateAssetMenu(menuName = "Game/Data/Clue")]`
   - `string _id` — unique, e.g. `clue_kitchen_01`
   - `[TextArea] string _text` — placeholder
-  - `RoomId _roomId` — feeds the C1 leak / night patrol bias later
+  - `RoomId _roomId` — feeds the C1 leak, and from Aug 28 the night check: hide in a leaked room and you lose
   - `bool _isEvidence` — the police accusation filters on this later
 - `ItemSO` — `[CreateAssetMenu(menuName = "Game/Data/Item")]`
   - `string _id`

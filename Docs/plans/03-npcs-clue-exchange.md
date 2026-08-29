@@ -5,7 +5,7 @@ Decisions this plan encodes (day-2 plan, Aug 27 amendment):
 - **What an NPC returns is a per-NPC map** given-clue → returned-clue, with an optional fallback for unmapped clues (the flowchart's "useless NotGrandma clue"). The Uncle's-clue → Cousin → evidence beat is just a map entry.
 - **Sharing keeps the clue.** Information is shared, not surrendered; the real cost is the leak. The same clue can be shared with several NPCs.
 - **One share per (NPC, clue).** NPCs remember what you told them (C1); repeating a clue to the same NPC does nothing — no reward farming, no double leak.
-- **Leak tracking lives here.** The exchange is the only place a leak is born. The night patrol (Janhavi) only *consumes* `LeakedRooms`.
+- **Leak tracking lives here.** The exchange is the only place a leak is born. The night only *consumes* `LeakedRooms`. *(Aug 28: the consumer is no longer a patrol but the night check — hiding in a leaked room is a loss. `ExchangeLog` is unchanged, and leaks now accumulate across every day of the run.)*
 - **Entry point: a share prompt when a conversation ends — but only after dialogues explicitly marked for it.** Dialogue graphs stay cosmetic; the exchange is presentation flow *after* `DialogueFinished`, never a dialogue-node effect. Most conversations (intros, story beats, Not Grandma) end with no prompt at all.
 - **NPCs carry their visual identity in data** (Aug 27, second pass): a representative `Color` plus two sprites — a dialogue portrait and a world sprite. **All 4 characters get an `NpcSO`**, Not Grandma included (her unique colour is the GDD §C4 visual-deception hook); she simply has an empty exchange table. Dialogue nodes reference the speaker's `NpcSO` directly — the `_speakerName` string dies.
 
@@ -32,7 +32,7 @@ Channel SOs per the CLAUDE.md pattern. Namespace `Game.Events`.
 |---|---|---|---|
 | `NpcEngagedEventChannelSO` | `NpcSO` | `NpcInteractable` (on interact, before requesting dialogue) | `ExchangeController` (remembers who the conversation is with) |
 | `ClueSharedEventChannelSO` | `Action<NpcSO, ClueSO>` | `ExchangeController` (accepted share) | plan 04 `StoryDirector`; later: audio lie layer |
-| `RoomLeakedEventChannelSO` | `RoomId` | `ExchangeController` (a share with the leaker leaked a new room) | night patrol bias (Janhavi) |
+| `RoomLeakedEventChannelSO` | `RoomId` | `ExchangeController` (a share with the leaker leaked a new room) | the night check *(Aug 28 — not the audio: an audible leak would name the traitor)* |
 | `ClueCollectedEventChannelSO` *(existing)* | `ClueSO` | `ExchangeController` (the returned clue) | `NotebookController` — the returned clue lands in the notebook through the same pipe as a found clue, dedupe included |
 
 ## Data
