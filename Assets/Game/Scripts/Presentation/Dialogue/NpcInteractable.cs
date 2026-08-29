@@ -11,8 +11,8 @@ namespace Game.Presentation
         [SerializeField] private DialogueSO _dialogue;
         [SerializeField] private NpcSO _npc;
         [Header("Event Channels")]
-        [SerializeField] private DialogueRequestedEventChannelSO _dialogueRequestedEventChannel;
-        [SerializeField] private NpcEngagedEventChannelSO _npcEngagedEventChannel;
+        [SerializeField] private DialogueEventChannelSO _dialogueRequestedEventChannel;
+        [SerializeField] private NpcEventChannelSO _npcEngagedEventChannel;
 
         public void Interact()
         {

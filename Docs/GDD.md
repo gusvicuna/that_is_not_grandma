@@ -151,7 +151,7 @@ Sneak around the house, avoid the **Doppelgänger**, and find out where they too
 
 ## 10. Platform & Audience
 
-**Platform:** PC, mouse and keyboard (WebGL) · **Audience:** PG-13 · **Target aspect ratio:** 16:9
+**Platform:** PC, mouse and keyboard (WebGL) · **Audience:** PG-13 · **Target aspect ratio:** ~~16:9~~ → **4:3** *(corrected Aug 28)*. Build resolution **960×720**; the itch embed and the Web player canvas use the same.
 
 ## 11. Team Roles & Ownership
 

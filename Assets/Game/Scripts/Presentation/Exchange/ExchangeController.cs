@@ -11,11 +11,11 @@ namespace Game.Presentation
     {
         public event Action OnExchangeStateChanged;
 
-        [SerializeField] private NpcEngagedEventChannelSO _npcEngaged;
-        [SerializeField] private DialogueFinishedEventChannelSO _dialogueFinished;
-        [SerializeField] private ClueSharedEventChannelSO _clueShared;
-        [SerializeField] private ClueCollectedEventChannelSO _clueCollected;
-        [SerializeField] private RoomLeakedEventChannelSO _roomLeaked;
+        [SerializeField] private NpcEventChannelSO _npcEngaged;
+        [SerializeField] private DialogueEventChannelSO _dialogueFinished;
+        [SerializeField] private NpcClueEventChannelSO _clueShared;
+        [SerializeField] private ClueEventChannelSO _clueCollected;
+        [SerializeField] private RoomIdEventChannelSO _roomLeaked;
 
         private readonly ExchangeLog _exchangeLog = new();
         private bool _isExchangeActive;

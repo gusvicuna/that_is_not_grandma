@@ -8,7 +8,7 @@ namespace Game.Presentation
 {
     public class NotebookController : MonoBehaviour
     {
-        [SerializeField] private ClueCollectedEventChannelSO _clueCollectedEventChannel;
+        [SerializeField] private ClueEventChannelSO _clueCollectedEventChannel;
         private Notebook _notebook;
         private readonly List<ClueSO> _collectedClueSOs = new();
 
