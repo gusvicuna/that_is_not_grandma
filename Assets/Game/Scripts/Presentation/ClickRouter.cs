@@ -10,6 +10,9 @@ namespace Game.Presentation
         [SerializeField] private InputActionReference _pointAction;
         [SerializeField] private DialogueController _dialogueController;
         [SerializeField] private ExchangeController _exchangeController;
+        [SerializeField] private HideConfirmView _hideConfirmView;
+        [SerializeField] private NightSequenceView _nightSequenceView;
+        [SerializeField] private ItemInspectPopup _itemInspectPopup;
 
         private void OnEnable()
         {
@@ -38,6 +41,23 @@ namespace Game.Presentation
             }
             if (_exchangeController.IsExchangeActive)
             {
+                return;
+            }
+            // The hide prompt is a modal: without this the raycast underneath keeps firing and the
+            // player can collect a clue through the panel.
+            if (_hideConfirmView != null && _hideConfirmView.IsOpen)
+            {
+                return;
+            }
+            if (_nightSequenceView != null && _nightSequenceView.IsPlaying)
+            {
+                return;
+            }
+            // The inspect popup is closed by the next click anywhere, and that click is consumed:
+            // dismissing it must not also interact with whatever is underneath.
+            if (_itemInspectPopup != null && _itemInspectPopup.IsOpen)
+            {
+                _itemInspectPopup.Hide();
                 return;
             }
             InteractAtPointer();

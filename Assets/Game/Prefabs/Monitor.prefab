@@ -9,14 +9,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 319193487519888068}
-  - component: {fileID: 1580592062452222283}
   m_Layer: 0
   m_Name: LivingRoom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &319193487519888068
 Transform:
   m_ObjectHideFlags: 0
@@ -35,19 +34,6 @@ Transform:
   - {fileID: 8578982905770451163}
   m_Father: {fileID: 5256648396057206987}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1580592062452222283
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 104961933017834677}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bde1342d3894b934a9a414930bbe01df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Rooms
-  roomName: LivingRoom
 --- !u!1 &514662390305983318
 GameObject:
   m_ObjectHideFlags: 0
@@ -820,14 +806,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5132086749072076280}
-  - component: {fileID: 12754931140907993}
   m_Layer: 0
   m_Name: Kitchen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5132086749072076280
 Transform:
   m_ObjectHideFlags: 0
@@ -846,19 +831,6 @@ Transform:
   - {fileID: 5924012361359986462}
   m_Father: {fileID: 5256648396057206987}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &12754931140907993
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3469916795389423836}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bde1342d3894b934a9a414930bbe01df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Rooms
-  roomName: Kitchen
 --- !u!1 &4270003749960741519
 GameObject:
   m_ObjectHideFlags: 0
@@ -885,7 +857,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.335, y: 0.335, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7132069192969132452}
@@ -1239,14 +1211,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7695158554341812845}
-  - component: {fileID: 8363356035822742245}
   m_Layer: 0
   m_Name: Bathroom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7695158554341812845
 Transform:
   m_ObjectHideFlags: 0
@@ -1265,19 +1236,6 @@ Transform:
   - {fileID: 1908993353642362205}
   m_Father: {fileID: 5256648396057206987}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8363356035822742245
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4407567308386218903}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bde1342d3894b934a9a414930bbe01df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Rooms
-  roomName: BathRoom
 --- !u!1 &4428716341436384328
 GameObject:
   m_ObjectHideFlags: 0
@@ -1379,7 +1337,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5545719841300246977}
-  - component: {fileID: 7904414893697110626}
   m_Layer: 0
   m_Name: BedRoom
   m_TagString: Untagged
@@ -1405,19 +1362,6 @@ Transform:
   - {fileID: 3519211600511976781}
   m_Father: {fileID: 5256648396057206987}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7904414893697110626
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4982254972148538072}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bde1342d3894b934a9a414930bbe01df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Rooms
-  roomName: Bedroom
 --- !u!1 &5650453485875737775
 GameObject:
   m_ObjectHideFlags: 0
@@ -1865,6 +1809,7 @@ MonoBehaviour:
   - {fileID: 3469916795389423836}
   - {fileID: 4982254972148538072}
   - {fileID: 4407567308386218903}
+  roomIds: 01000000000000000200000003000000
   _roomChanged: {fileID: 11400000, guid: 3f06078a967a0b54ca1d70159e0bbdb3, type: 2}
 --- !u!1 &7277618556470844999
 GameObject:

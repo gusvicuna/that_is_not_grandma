@@ -392,13 +392,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 463092b8caa071344af27c42d741b8b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Presentation.MusicDirector
-  _player: {fileID: 7525312768845501117}
+  _layerPlayer: {fileID: 7525312768845501117}
   _fadeInPerSecond: 0.5
   _fadeOutPerSecond: 0.2
   _lieMotifSeconds: 8
   _tensionChangedChannel: {fileID: 11400000, guid: 5fad66bbaefb6f84196113f1061275a3, type: 2}
   _nightStartedChannel: {fileID: 11400000, guid: 309cb270ce0ebc6488cd2f7776c8b45a, type: 2}
-  _dayStartedChannel: {fileID: 11400000, guid: 0da4a48f241aadf49ab21dc95598dd68, type: 2}
+  _dayStartedChannel: {fileID: 11400000, guid: 0b4fc967165465c49b267009e5e2f5a5, type: 2}
 --- !u!114 &7525312768845501117
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -412,7 +412,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Presentation.MusicLayerPlayer
   _layerSet: {fileID: 11400000, guid: aac10bd3d08da1a4d8abad60447c8740, type: 2}
-  _sources:
+  _layerSources:
   - _layer: 0
     _source: {fileID: 2255011001809729999}
   - _layer: 1
@@ -470,9 +470,9 @@ MonoBehaviour:
   _sourceA: {fileID: 4200711713273310642}
   _sourceB: {fileID: 2018590280243744077}
   _fadeSeconds: 2
-  _roomChangedChannel: {fileID: 11400000, guid: 0f7e0258f97ab0a4ea9a0c192bb380c6, type: 2}
+  _roomChangedChannel: {fileID: 11400000, guid: 3f06078a967a0b54ca1d70159e0bbdb3, type: 2}
   _nightStartedChannel: {fileID: 11400000, guid: 309cb270ce0ebc6488cd2f7776c8b45a, type: 2}
-  _dayStartedChannel: {fileID: 11400000, guid: 0da4a48f241aadf49ab21dc95598dd68, type: 2}
+  _dayStartedChannel: {fileID: 11400000, guid: 0b4fc967165465c49b267009e5e2f5a5, type: 2}
   _audioUnlockedChannel: {fileID: 11400000, guid: e8465a007a8ae8d43a93d5ea87cc4170, type: 2}
 --- !u!1 &5942410084095336732
 GameObject:
@@ -958,12 +958,12 @@ MonoBehaviour:
   _itemInspectedChannel: {fileID: 11400000, guid: a307042258a4664428942a8c60e05831, type: 2}
   _clueCollectedChannel: {fileID: 11400000, guid: 71308b7d6c0f02e4cb244720c3dec9ef, type: 2}
   _clueSharedChannel: {fileID: 11400000, guid: 7b66c06f6fdab9440bbb5d39256d3e43, type: 2}
-  _roomChangedChannel: {fileID: 11400000, guid: 0f7e0258f97ab0a4ea9a0c192bb380c6, type: 2}
+  _roomChangedChannel: {fileID: 11400000, guid: 3f06078a967a0b54ca1d70159e0bbdb3, type: 2}
   _tensionChangedChannel: {fileID: 11400000, guid: 5fad66bbaefb6f84196113f1061275a3, type: 2}
   _dialogueRequestedChannel: {fileID: 11400000, guid: 2c2f8eed39fb2cd4eac93a54c981a8a0, type: 2}
   _nightStartedChannel: {fileID: 11400000, guid: 309cb270ce0ebc6488cd2f7776c8b45a, type: 2}
   _nightResolvedChannel: {fileID: 11400000, guid: ce2fcfc381f9c1c419075c1b9878c4e7, type: 2}
-  _dayStartedChannel: {fileID: 11400000, guid: 0da4a48f241aadf49ab21dc95598dd68, type: 2}
+  _dayStartedChannel: {fileID: 11400000, guid: 0b4fc967165465c49b267009e5e2f5a5, type: 2}
   _interactCue: {fileID: 11400000, guid: 744b62bc5cbbb7b47b42624310a27e2d, type: 2}
   _clueCollectedCue: {fileID: 0}
   _clueSharedCue: {fileID: 0}

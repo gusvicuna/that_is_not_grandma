@@ -11,11 +11,13 @@ namespace Game.Presentation
         [SerializeField] private DialogueSO _policeIntroDialogue;
         [SerializeField] private DialogueSO _phoneUnavailableDialogue;
 
-        [SerializeField] private DayStartedEventChannelSO _dayStarted;
-        [SerializeField] private DialogueRequestedEventChannelSO _dialogueRequested;
-        [SerializeField] private DialogueFinishedEventChannelSO _dialogueFinished;
-        [SerializeField] private GameWonEventChannelSO _gameWon;
+        [SerializeField] private IntEventChannelSO _dayStarted;
+        [SerializeField] private DialogueEventChannelSO _dialogueRequested;
+        [SerializeField] private DialogueEventChannelSO _dialogueFinished;
+        [SerializeField] private VoidEventChannelSO _gameWon;
         [SerializeField] private GameLostEventChannelSO _gameLost;
+        [Tooltip("Every resolved call is announced here so story beats can react to it.")]
+        [SerializeField] private PoliceCallOutcomeEventChannelSO _policeCallResolved;
 
         [SerializeField] private int _startingTrust = 2;
         [SerializeField] private int _firstAvailableDay = 2;
@@ -91,6 +93,8 @@ namespace Game.Presentation
             {
                 _gameLost.Raise(LossReason.PoliceTrustLost);
             }
+
+            _policeCallResolved.Raise(outcome);
 
             return outcome;
         }

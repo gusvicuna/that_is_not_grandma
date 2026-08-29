@@ -9,6 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91135172aa7381f43a6ba0b91a015c52, type: 3}
+  m_Script: {fileID: 11500000, guid: 8de6f86919f3fcd44b7e9c876c9bd989, type: 3}
   m_Name: CH_DialogueFinished
   m_EditorClassIdentifier: Assembly-CSharp::Game.Events.DialogueFinishedEventChannelSO
+  _description: 
+  _editorPayload: {fileID: 0}

@@ -9,6 +9,7 @@ namespace Game.Data
     public class DialogueSO : ScriptableObject
     {
         [SerializeField] private string _id;
+        public string Id => _id;
         [SerializeField] private DialogueNodeData[] _nodes;
         public IReadOnlyList<DialogueNodeData> Nodes => _nodes;
         [SerializeField] private bool _allowsClueExchange;

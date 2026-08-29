@@ -14,6 +14,14 @@ namespace Game.Presentation
         [SerializeField] private DialogueEventChannelSO _dialogueRequestedEventChannel;
         [SerializeField] private NpcEventChannelSO _npcEngagedEventChannel;
 
+        public NpcSO Npc => _npc;
+
+        /// <summary>Rebinds what this NPC says next. Called by the story director's scene binder.</summary>
+        public void SetDialogue(DialogueSO dialogue)
+        {
+            _dialogue = dialogue;
+        }
+
         public void Interact()
         {
             _npcEngagedEventChannel.Raise(_npc);
