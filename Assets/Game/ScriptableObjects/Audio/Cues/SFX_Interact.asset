@@ -14,9 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.Data.AudioCueSO
   _clips:
   - {fileID: 8300000, guid: 5da13b6edd29b65499cf8eee2926d8c3, type: 3}
-  - {fileID: 8300000, guid: 50d6d1ea8ee82b540a67dceed0f31a81, type: 3}
-  - {fileID: 8300000, guid: c38d406abff7f8b42af6fcec0c96e9fb, type: 3}
-  - {fileID: 8300000, guid: bc1ac1025702f3b45a1b16a0413a6c0b, type: 3}
   _bus: 2
   _volumeMin: 1
   _volumeMax: 1

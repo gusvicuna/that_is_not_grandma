@@ -1,17 +1,12 @@
-using System;
 using UnityEngine;
 using Game.Domain;
 
 namespace Game.Events
 {
-    [CreateAssetMenu(fileName = "GameLostEventChannel", menuName = "Game/Events/Game Lost")]
-    public class GameLostEventChannelSO : ScriptableObject
-    {
-        public event Action<LossReason> Raised;
-
-        public void Raise(LossReason reason)
-        {
-            Raised?.Invoke(reason);
-        }
-    }
+    /// <summary>
+    /// Defined by plan 06 (police call) and written here because plan 04's night check needs it
+    /// first. Same file name, same payload — do not write a second one when plan 06 merges.
+    /// </summary>
+    [CreateAssetMenu(fileName = "CH_GameLost", menuName = "Game/Events/Game Lost")]
+    public class GameLostEventChannelSO : EventChannelSO<LossReason> { }
 }

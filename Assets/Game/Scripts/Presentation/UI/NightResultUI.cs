@@ -1,11 +1,15 @@
 using TMPro;
 using UnityEngine;
 using Game.Domain;
+using Game.Events;
 
 public class NightResultUI : MonoBehaviour
 {
     [SerializeField] private GameObject panel;
     [SerializeField] private TMP_Text resultText;
+
+    [Tooltip("Every way the run can end arrives here, whatever raised it.")]
+    [SerializeField] private GameLostEventChannelSO gameLost;
 
     private void Start()
     {
@@ -13,6 +17,27 @@ public class NightResultUI : MonoBehaviour
         {
             panel.SetActive(false);
         }
+    }
+
+    private void OnEnable()
+    {
+        if (gameLost != null)
+        {
+            gameLost.Raised += OnGameLost;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (gameLost != null)
+        {
+            gameLost.Raised -= OnGameLost;
+        }
+    }
+
+    private void OnGameLost(LossReason lossReason)
+    {
+        ShowResult(false, lossReason);
     }
 
     public void ShowResult(bool survived, LossReason lossReason)

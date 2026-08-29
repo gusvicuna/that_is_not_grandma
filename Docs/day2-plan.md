@@ -91,6 +91,19 @@ Locked while planning `Docs/plans/06-police-call.md` (Janhavi implements it end 
 6. **The police intro reuses the dialogue system unchanged** — a `DialogueSO` spoken by an `NPC_Police` `NpcSO`, with `_allowsClueExchange` off. The controller opens the call panel on `DialogueFinished` only when the finished dialogue is its own.
 7. **Police trust starts at 2**, serialized on the controller. The GDD §7 phrasing ("2 wrong accusations, the third is a loss") would be 3 — it is one number in the Inspector if Gus changes his mind.
 
+#### Amendment — Fri Aug 28 (Gus), the story director
+
+Locked while planning `Docs/plans/04-story-director.md`, after the tooling comparison in `Docs/research/story-director-tooling.md`:
+
+1. **We build it. No Ink, no Yarn Spinner, no Fungus, no Unity Behavior, no Visual Scripting, no paid toolkit.** The reason is structural, not stubborn: every tool ships the trigger/condition plumbing (~80 lines for us) and none ships the effects (~500), which stay custom classes in the tool's idiom — untestable in EditMode, which is the one testing rule this project kept. Post-jam order: Ink or Yarn Spinner for story state, Adventure Creator evaluated before the *next* point-and-click.
+2. **A story beat is `trigger → conditions → effects`, authored as one `StoryBeatSO` per beat.** Effects are data, so new story content never touches C#. Beats are **one-shot by default**, which is what makes the free-roam intro (Aug 26 amendment §3) behave.
+3. **NPCs and items are pre-placed in every room where they can appear and toggled with `SetActive`.** "Move NPC" = hide here, show there. No runtime `Instantiate`, no prefab loading — and no WebGL risk in this feature.
+4. **The day clock pauses while a dialogue or the exchange panel is open**, and charges a fixed cost when the action ends. This keeps the Aug 26 "mixed clock" decision while making reading the writing free.
+5. **Clicking a hiding spot ends the day immediately.** Waiting out a timer inside a wardrobe is dead time in an 8–12 minute run.
+6. **NPCs react after a trade, and the police answer back after a call.** A beat can trigger on "clue X shared with NPC Y" or on a resolved police call and play a dialogue in response — the second needs one new channel, `CH_PoliceCallResolved(PoliceCallOutcome)`, raised by one added line in Janhavi's `PoliceCallController`. Those dialogues are **queued and played once the panel closes**, never stacked on top of it: both moments raise their trigger while their panel is still on screen, and a dialogue requested while one is running is silently dropped.
+7. **Hiding asks for confirmation** — a yes/no prompt before the day ends, so nobody loses a day without knowing why. Cancelling costs no time.
+8. **Plan 04 owns `CH_DayStarted`**, so plan 06's `DebugDayAdvancer` is deleted when it merges. The night check `NightCheck.Survives(hidingRoom, leakedRooms)` lives here and raises plan 06's `CH_GameLost`. There is no hard day cap: the 3-day ceiling comes from the 2 police lives.
+
 ---
 
 ## B. The MVP loop (Must-Have only — must exist by Wednesday)

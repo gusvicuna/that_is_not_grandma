@@ -1,0 +1,314 @@
+# 04 — Story director (beats + the day/night loop)
+
+**Goal:** a pure-C# `StoryDirector` fires authored story beats (`trigger → conditions → effects`) that move, show, hide and re-script NPCs and items, and a day clock that runs the day → night → day loop until the run ends. **Priority:** Must-Have (day-2 plan, Aug 26 amendment §2: "Story progression system is an explicit Must-Have"; Aug 28 amendment: the night is one check and the run loops).
+
+**Owner: Gus.** Code and editor setup. Tooling was researched first — see `Docs/research/story-director-tooling.md`; verdict: build it, ~14 files, no new dependency.
+
+---
+
+## Decisions this plan encodes (Gus, Aug 28)
+
+1. **Beats are data, never code.** A `StoryBeatSO` per beat; adding story content never touches C#. The director's Domain half only decides *which* beats fire; Presentation applies their effects.
+2. **NPCs and items are pre-placed in every room where they can appear and toggled with `SetActive`.** "Move NPC" = hide it in room A, show it in room B. No `Instantiate`, no prefabs loaded at runtime, no anchors — and no WebGL risk.
+3. **Beats are one-shot by default** (`_repeatable` off). This is what makes the free-roam intro (Aug 26 amendment §3) behave: each intro beat fires the first time its condition is met, in whatever order the player roams.
+4. **The day clock is mixed:** a real-time countdown *plus* time charged per significant action. **It pauses while a dialogue or the exchange panel is open** — reading is free, the action costs a fixed amount when it ends. Otherwise the clock punishes players for reading the writing the team spent two nights on.
+5. **Clicking a hiding spot ends the day immediately** (`_hidingEndsDayImmediately`, on by default). Waiting out a timer inside a wardrobe is dead time in an 8–12 minute run.
+6. **This plan owns `CH_DayStarted`.** When it lands, plan 06's `DebugDayAdvancer` is deleted and its `PoliceCallController` points at the same asset. Nobody writes a second day counter.
+7. **The night is `NightCheck.Survives(...)`, a pure function of "where did you hide" and "which rooms leaked".** No patrol, no AI (Aug 28 amendment §1).
+8. **Leaked rooms are accumulated from `CH_RoomLeaked`, never reset, and never queried from `ExchangeController`.** The exchange side already raises the channel; this side only listens.
+9. **`PlayDialogue` effects are queued, never played on the spot.** `CH_ClueShared` is raised **while the exchange panel is still open**, and `PoliceCallController` deliberately keeps its panel open after `SubmitEvidence` so the player can read the result. Firing a dialogue at that moment would stack a conversation on top of an open panel — and `DialogueController.OnDialogueRequested` silently drops the request when a dialogue is already running, so the beat would vanish with no error. The binder holds the dialogue until nothing modal is open.
+10. **Hiding asks for confirmation.** Clicking a hiding spot opens a small yes/no prompt; the day ends only on "yes". Decision 5 (hiding ends the day immediately) stands — the prompt is what makes it legible instead of a trap.
+
+## Post-merge amendment (Gus, Aug 29)
+
+Janhavi's branch landed with a parallel day/night implementation. Resolution:
+
+1. **One system survives: this one.** Deleted `DayNight/DayNightCycle.cs`, `Presentation/Day/DayClock.cs`, and `Presentation/Night/Rooms/{HidingSpot,NightHiding,NightSurvivalChecker,Room}.cs`. Her `Presentation/Day/DayClock.cs` was a MonoBehaviour in the **global namespace**, and it broke the build: this plan's `using` directives sit outside the `namespace` block, so at global scope a declared type beats an imported one and `DayClock` resolved to her MonoBehaviour — seven compile errors, and Unity refusing to add *any* component until they cleared.
+2. **Her names win.** `DayClockController` → **`DayNightCycle`**, `NightController` → **`NightSurvivalChecker`**, `HidingSpotInteractable` → **`HidingSpot`**. `Game.Domain.DayClock` keeps the name her MonoBehaviour used to hold, now as the pure-C# clock.
+3. **`NightResultUI` is kept** — it is the only piece of that group with no equivalent here, and its three loss lines are already written by a human. It now listens to `CH_GameLost` instead of being called by a hiding spot.
+4. **`GameWonEventChannelSO` is deleted; `CH_GameWon` becomes a `VoidEventChannelSO`.** Her class derived from `ScriptableObject` directly, so it had no description, no listener count and no inspector Raise button.
+5. **`CH_PoliceCallResolved` is now raised** at the end of `PoliceCallController.SubmitEvidence` — the dependency below is satisfied.
+
+## Dependencies on other plans
+
+| Needs | From | If it isn't on `dev` yet |
+|---|---|---|
+| `LossReason` enum, `GameLostEventChannelSO`, `CH_GameLost` | plan 06 (Janhavi) | Create them **exactly** as plan 06 §Domain/§Events specifies — same file names, same values. Do not invent a second enum. |
+| `CH_RoomChanged` raised on room entry | room navigation (Janhavi; contract set by plan 05) | The `RoomEntered` trigger simply never fires; every other trigger works. Do not raise it from here. |
+| `DialogueSO.Id` is `private` with no getter | plan 02 (this repo) | One-line patch: `public string Id => _id;` |
+| `NpcInteractable._npc` has no getter | plan 03 (this repo) | One-line patch: `public NpcSO Npc => _npc;` plus `public void SetDialogue(DialogueSO dialogue)`. |
+| `CH_PoliceCallResolved` raised after a call | plan 06 (Janhavi) | **One line at the end of `PoliceCallController.SubmitEvidence`:** `_policeCallResolved.Raise(outcome);` plus the serialized field. Everything else — the channel class, the asset, the beats — is created here. Without it, only the exchange reaction works; nothing breaks. |
+
+---
+
+## Domain
+
+Pure C#, **no `using UnityEngine;`**, namespace `Game.Domain`, folder `Assets/Game/Scripts/Domain/Story/`.
+
+### `StoryTrigger.cs`
+
+```csharp
+public enum StoryTrigger
+{
+    ClueCollected,      // CH_ClueCollected
+    ItemInspected,      // CH_ItemInspected
+    DialogueFinished,   // CH_DialogueFinished
+    ClueShared,         // CH_ClueShared  (clue + npc)
+    RoomEntered,        // CH_RoomChanged
+    DayStarted,         // CH_DayStarted
+    PoliceCallResolved  // CH_PoliceCallResolved
+}
+```
+
+### `StoryEvent.cs` — readonly struct
+
+`StoryEvent(StoryTrigger trigger, string primaryId = null, string secondaryId = null, int number = 0)`.
+
+How Presentation fills it, per channel:
+
+| Channel | Trigger | `PrimaryId` | `SecondaryId` | `Number` |
+|---|---|---|---|---|
+| `CH_ClueCollected` (`ClueSO`) | `ClueCollected` | `clue.Id` | — | — |
+| `CH_ItemInspected` (`ItemSO`) | `ItemInspected` | `item.Id` | — | — |
+| `CH_DialogueFinished` (`DialogueSO`) | `DialogueFinished` | `dialogue.Id` | — | — |
+| `CH_ClueShared` (`NpcSO`, `ClueSO`) | `ClueShared` | `clue.Id` | `npc.Id` | — |
+| `CH_RoomChanged` (`RoomId`) | `RoomEntered` | — | — | `(int)room` |
+| `CH_DayStarted` (`int`) | `DayStarted` | — | — | `day` |
+| `CH_PoliceCallResolved` (`PoliceCallOutcome`) | `PoliceCallResolved` | — | — | `(int)outcome` |
+
+### `StoryCondition.cs` — immutable
+
+`StoryCondition(IReadOnlyList<string> requiredFlags = null, IReadOnlyList<string> forbiddenFlags = null, int minDay = 0)` — null lists are stored as empty ones.
+
+- `IReadOnlyList<string> RequiredFlags` — all must be set.
+- `IReadOnlyList<string> ForbiddenFlags` — none may be set.
+- `int MinDay` — `0` = any day.
+- `static readonly StoryCondition Always`.
+
+### `StoryBeat.cs` — immutable
+
+```csharp
+public StoryBeat(
+    string id,
+    StoryTrigger trigger,
+    string matchPrimaryId = null,
+    string matchSecondaryId = null,
+    int matchNumber = -1,
+    StoryCondition condition = null,
+    bool repeatable = false)
+```
+
+| Member | Contract |
+|---|---|
+| `string Id` | Unique within the director. Throws `ArgumentException` if null/empty. |
+| `StoryTrigger Trigger` | — |
+| `string MatchPrimaryId` / `string MatchSecondaryId` | Null or empty = **wildcard** (any clue / any NPC). |
+| `int MatchNumber` | `-1` = wildcard. Used by `RoomEntered` (the `RoomId` as int), `DayStarted` (the day) and `PoliceCallResolved` (the `PoliceCallOutcome` as int). |
+| `StoryCondition Condition` | Never null; defaults to `Always`. |
+| `bool Repeatable` | Default `false` — the beat fires at most once per run. |
+
+### `StoryDirector.cs`
+
+| Member | Contract |
+|---|---|
+| `StoryDirector(IEnumerable<StoryBeat> beats)` | Throws `ArgumentNullException` on null, `ArgumentException` on a duplicate beat id. Order is preserved. |
+| `int CurrentDay` | `0` until the first `DayStarted` event. |
+| `bool HasFlag(string flag)` / `void SetFlag(string flag)` | The flag set is the director's only mutable story state. |
+| `bool HasFired(string beatId)` | — |
+| `IReadOnlyList<string> Notify(StoryEvent evt)` | Returns the ids of the beats that fired, **in declaration order**. A `DayStarted` event updates `CurrentDay` *before* matching, so a beat with `MinDay = 2` fires on `DayStarted(2)`. |
+
+Matching rule — a beat fires when **all** hold: same trigger · each non-wildcard match field equals the event's · `CurrentDay >= Condition.MinDay` · every required flag set · no forbidden flag set · `Repeatable || !HasFired`.
+
+**No cascade within one event.** Flags set by a beat's effects are applied by Presentation *after* `Notify` returns, so a beat can never trigger another beat in the same call. That is deliberate: it keeps the order of the returned list the only thing to reason about, and it makes the tests read straight down.
+
+### `DayClock.cs`
+
+| Member | Contract |
+|---|---|
+| `DayClock(float secondsPerDay)` | Throws `ArgumentOutOfRangeException` if `secondsPerDay <= 0`. Starts full. |
+| `float SecondsPerDay` / `float Remaining` / `float NormalizedRemaining` | `Remaining` never goes below `0`. `NormalizedRemaining` drives the UI bar. |
+| `bool IsExpired` | `Remaining <= 0`. |
+| `void Tick(float deltaSeconds)` | Throws `ArgumentOutOfRangeException` on a negative delta. Clamps at 0. |
+| `void Spend(float cost)` | Same rules — this is the per-action charge. |
+| `void ResetForNewDay()` | Back to `SecondsPerDay`. |
+
+### `NightCheck.cs` — static, the whole night in one function
+
+```csharp
+public static bool Survives(RoomId? hidingRoom, IReadOnlyCollection<RoomId> leakedRooms, out LossReason reason)
+```
+
+- not hiding anywhere → `false`, `LossReason.DayClockExpired`
+- hiding in a room in `leakedRooms` → `false`, `LossReason.HidInLeakedRoom`
+- otherwise → `true`, and **`reason` is meaningless — callers must not read it.** C# forces the `out` to be assigned on every path, so it gets `default`, which is `LossReason.PoliceTrustLost` (value 0): a valid-looking, completely wrong answer for a night the player survived. This is `TryParse`'s contract with the polarity flipped, which is exactly the kind of thing that gets misread under deadline. Keep it honest in code, not in a comment: `NightSurvivalChecker` reads `reason` only inside the failure branch, and every other call site passes `out _`.
+- a `null` `leakedRooms` is treated as empty, never as an exception: "no room has leaked yet" is the state of every run before the first trade, and a night must not throw.
+
+## Events
+
+**Two new assets, one new channel class.** `CH_PlayerHid` needs no class at all — it is a `RoomIdEventChannelSO`, because the class is chosen by payload and the asset by signal (`CLAUDE.md`). `CH_PoliceCallResolved` carries plan 06's `PoliceCallOutcome`, which no channel covers yet, so it gets the usual one-line subclass.
+
+```csharp
+// Events/PoliceCallOutcomeEventChannelSO.cs
+[CreateAssetMenu(fileName = "CH_PoliceCallOutcome", menuName = "Game/Events/Police Call Outcome")]
+public class PoliceCallOutcomeEventChannelSO : EventChannelSO<PoliceCallOutcome> { }
+```
+
+| Channel asset | Class | Raised by | Listened by |
+|---|---|---|---|
+| `CH_PlayerHid` *(new asset)* | `RoomIdEventChannelSO` | `HidingSpot` | `NightSurvivalChecker` |
+| `CH_PoliceCallResolved` *(new asset + class)* | `PoliceCallOutcomeEventChannelSO` | `PoliceCallController` (plan 06 — one added line) | `StoryDirectorBehaviour` |
+| `CH_DayStarted` *(exists)* | `IntEventChannelSO` | `DayNightCycle` | `PoliceCallController` (plan 06), `StoryDirectorBehaviour` |
+| `CH_NightStarted` *(exists)* | `VoidEventChannelSO` | `DayNightCycle` | `NightSurvivalChecker`, audio |
+| `CH_NightResolved` *(exists)* | `BoolEventChannelSO` (survived) | `NightSurvivalChecker` | `DayNightCycle` (starts the next morning), audio, UI |
+| `CH_GameLost` *(plan 06)* | `GameLostEventChannelSO` | `NightSurvivalChecker` | `GameEndView` (plan 06) |
+| `CH_RoomLeaked` *(exists)* | `RoomIdEventChannelSO` | `ExchangeController` | `NightSurvivalChecker` |
+| `CH_TensionChanged` *(exists)* | `TensionLevelEventChannelSO` | `StorySceneBinder` (`SetTension` effect) | audio (plan 05) |
+| `CH_DialogueRequested` *(exists)* | `DialogueEventChannelSO` | `StorySceneBinder` (`PlayDialogue` effect) | `DialogueController` |
+
+The remaining triggers (`CH_ClueCollected`, `CH_ItemInspected`, `CH_DialogueFinished`, `CH_ClueShared`, `CH_RoomChanged`, `CH_PoliceCallResolved`) are **listened to only** by `StoryDirectorBehaviour`. This feature raises nothing on them.
+
+The day clock does **not** get a channel — a UI bar reading it 60 times a second through a ScriptableObject is churn. `DayNightCycle` exposes `event Action OnClockChanged` and `float NormalizedRemaining`, the same shape `DialogueController.OnNodeChanged` already uses.
+
+## Data
+
+Namespace `Game.Data`, folder `Assets/Game/Scripts/Data/`.
+
+### `StoryEffectKind.cs`
+
+```csharp
+public enum StoryEffectKind
+{
+    ShowActor,        // actor id
+    HideActor,        // actor id
+    MoveActor,        // actor id + room
+    SetNpcDialogue,   // npc + dialogue: what the NPC plays on the next click
+    PlayDialogue,     // dialogue: raise CH_DialogueRequested now
+    SetTension,       // tension level: raise CH_TensionChanged
+    SetFlag           // flag name: story state for later conditions
+}
+```
+
+### `StoryEffectData.cs` — `[Serializable]`, not a ScriptableObject
+
+`_kind`, `_actorId` (string), `_room` (`RoomId`), `_npc` (`NpcSO`), `_dialogue` (`DialogueSO`), `_tension` (`TensionLevel`), `_flag` (string). Only the fields its kind needs are read; the rest stay empty in the inspector.
+
+### `StoryConditionData.cs` — `[Serializable]`
+
+`_requiredFlags` (string[]), `_forbiddenFlags` (string[]), `_minDay` (int). `ToCondition()` builds the Domain type.
+
+### `StoryBeatSO.cs` — `[CreateAssetMenu(menuName = "Game/Story/Beat")]`
+
+`_id`, `_trigger`, the match fields as **asset references, not strings** — `_matchClue` (`ClueSO`), `_matchItem` (`ItemSO`), `_matchDialogue` (`DialogueSO`), `_matchNpc` (`NpcSO`), `_matchRoom` (`RoomId`) + `_matchAnyRoom` (bool), `_matchDay` (int, 0 = any), `_matchOutcome` (`PoliceCallOutcome`) + `_matchAnyOutcome` (bool) — plus `_repeatable`, `_condition`, `_effects` (`StoryEffectData[]`).
+
+`StoryBeat ToBeat()` resolves those references into the ids the Domain matches on, and picks which field feeds `MatchNumber` from the trigger: room for `RoomEntered`, day for `DayStarted`, outcome for `PoliceCallResolved`, `-1` for the rest. Leaving a reference empty means "any". Dragging assets instead of typing ids is the whole reason a renamed clue can't silently break the story.
+
+## Presentation
+
+Namespace `Game.Presentation`, folder `Assets/Game/Scripts/Presentation/Story/`.
+
+### `StoryDirectorBehaviour`
+
+Owns the `StoryDirector`. Serializes `StoryBeatSO[] _beats` (declaration order = evaluation order), the six trigger channels, and a `StorySceneBinder`. Builds the director in `Awake` from `_beats.Select(b => b.ToBeat())`; subscribes to all six channels in `OnEnable`, unsubscribes in `OnDisable`. Each handler builds a `StoryEvent`, calls `Notify`, and hands every fired beat's `StoryBeatSO` to the binder.
+
+### `StorySceneBinder`
+
+The only place that turns effects into scene changes. Serializes `StoryActor[] _actors`, `NpcInteractable[] _npcs`, and the `CH_DialogueRequested` / `CH_TensionChanged` channels.
+
+- `ShowActor` / `HideActor` — `SetActive` on every actor with that id.
+- `MoveActor` — hide every actor with that id, show the one whose `Room` matches.
+- `SetNpcDialogue` — `SetDialogue` on every `NpcInteractable` whose `Npc` is the target (an NPC exists once per room they can appear in).
+- `PlayDialogue` — **queued, not raised now** (see below).
+- `SetTension` — raise the channel.
+- `SetFlag` — `_director.SetFlag(...)`.
+
+#### The deferred dialogue queue
+
+This is what makes "the NPC reacts after a trade" and "the police answer back after a call" work. Both moments raise their trigger channel **while a panel is still on screen**: `ExchangeController.Share()` raises `CH_ClueShared` before the player closes the share panel, and `PoliceCallController.SubmitEvidence()` keeps its panel open on purpose so the result can be read. Raising `CH_DialogueRequested` there would draw a conversation over an open panel, and if a dialogue happened to be running, `DialogueController.OnDialogueRequested` returns early and the beat's dialogue is lost with no error at all.
+
+So the binder serializes `DialogueController` and `ExchangeController` (`ClickRouter` already sets that precedent — Presentation may reference Presentation), keeps a `Queue<DialogueSO>`, and in `Update` raises the next one only when `!IsDialogueActive && !IsExchangeActive`. Two rules keep it honest: the queue is FIFO so two beats firing on the same event stay in declaration order, and it is **not** cleared between days — a dialogue that was queued gets played.
+
+If plan 06's panel must gate it too, add `PoliceCallController` as a third serialized reference and check its public `IsCallPanelActive`. Leave it unwired until that plan merges.
+
+**The arrays are wired by hand in the inspector, not discovered.** Actors inside rooms that `RoomController` deactivates never run `Awake`, so self-registration would silently miss exactly the objects this feature exists to move. Inspector references to inactive objects serialize fine.
+
+### `StoryActor`
+
+`[SerializeField] string _id;` + `[SerializeField] RoomId _room;`, public getters, `void SetVisible(bool)` → `gameObject.SetActive(...)`. One per NPC/item *instance*; the same `_id` appears once per room the actor can be in.
+
+### `DayNightCycle`
+
+Owns the `DayClock` and the loop. Serialized: `_secondsPerDay` (default `180`), `_talkCost` / `_shareCost` / `_clueCost` (default `8` / `12` / `5`), `_pauseWhileDialogueOpen` (default on), `_startDayOnStart`.
+
+- `Start` → day 1: `ResetForNewDay()`, raise `CH_DayStarted(1)`.
+- `Update` → `Tick(Time.deltaTime)` unless paused; on `IsExpired`, raise `CH_NightStarted` once and stop ticking.
+- Charges: `CH_DialogueFinished` → `_talkCost`, `CH_ClueShared` → `_shareCost`, `CH_ClueCollected` → `_clueCost`.
+- Pauses on `CH_DialogueRequested`, resumes on `CH_DialogueFinished` (after charging).
+- `CH_NightResolved(true)` → `_day++`, `ResetForNewDay()`, raise `CH_DayStarted(_day)`. `false` → stays stopped; plan 06's end screen takes over.
+- `EndDayNow()` — public, called by the hiding spot.
+
+All five numbers are balance knobs, Gus's to tune in the inspector during Saturday's pass. Nothing hardcodes them.
+
+### `NightSurvivalChecker`
+
+Serialized: `CH_NightStarted`, `CH_PlayerHid`, `CH_RoomChanged`, `CH_RoomLeaked`, `CH_NightResolved`, `CH_GameLost`.
+
+Keeps `RoomId? _hidingRoom` (set by `CH_PlayerHid`, **cleared on `CH_RoomChanged`** — leaving the room means leaving the hiding spot) and a `HashSet<RoomId> _leakedRooms` fed by `CH_RoomLeaked` and never cleared. On `CH_NightStarted`: call `NightCheck.Survives`, raise `CH_NightResolved(survived)`, and on failure also `CH_GameLost(reason)`.
+
+### `HidingSpot`
+
+`IInteractable` on a `Collider2D`, one per room, clicked through the existing `ClickRouter`. Serializes its `RoomId`, `CH_PlayerHid`, the `DayNightCycle` and the `HideConfirmView`. On `Interact()` it **only asks**: `_hideConfirmView.Ask(this)`. Nothing else happens until the player answers.
+
+- Confirmed → raise `CH_PlayerHid(room)` and, when `_hidingEndsDayImmediately`, call `EndDayNow()`.
+- Cancelled → nothing at all. No time charged: opening a prompt is not an action.
+
+### `HideConfirmView`
+
+A small uGUI panel, hidden by default: one placeholder line and two buttons. `Ask(HidingSpot spot)` stores the caller and shows the panel; the buttons call `Confirm()` / `Cancel()`, which hide it and call back. `bool IsOpen` is public.
+
+**`ClickRouter` needs one guard added**, next to the `IsExchangeActive` one it already has: while `HideConfirmView.IsOpen`, world clicks are ignored. Without it the raycast underneath keeps firing and the player can collect a clue through the prompt.
+
+The prompt text is a **human-written placeholder** (`"[HIDE_CONFIRM_PROMPT]"`, `"[YES]"`, `"[NO]"`) — jam rule, no AI-written player-facing text. Gus writes the real line.
+
+## Editor setup checklist
+
+1. `Assets/Game/ScriptableObjects/Channels/` → **Create ▸ Game ▸ Events ▸ Room Id**, name it `CH_PlayerHid`, fill `_description` ("The player entered a hiding spot in this room. Raised by HidingSpot."). Then **Create ▸ Game ▸ Events ▸ Police Call Outcome** → `CH_PoliceCallResolved` ("A police call was answered. Raised by PoliceCallController once per call, whatever the outcome.").
+2. New folder `Assets/Game/ScriptableObjects/Story/`. Create one beat per row via **Create ▸ Game ▸ Story ▸ Beat** (ids below are scaffolding — the real list is the `.drawio` flowchart, Gus's call):
+
+   | Beat id | Trigger | Match | Effects |
+   |---|---|---|---|
+   | `beat_intro_cousin` | `RoomEntered` | Living room | `PlayDialogue` cousin intro · `SetFlag met_cousin` |
+   | `beat_intro_uncle` | `DialogueFinished` | cousin intro | `ShowActor npc_uncle` (Living room) |
+   | `beat_grandma_arrives` | `ClueCollected` | first kitchen clue | `MoveActor npc_notgrandma` → Kitchen · `SetTension Uneasy` |
+   | `beat_phone_appears` | `DayStarted` | day 2 | `ShowActor item_phone` |
+   | `beat_uncle_second_talk` | `ClueShared` | any clue + `NPC_Uncle` | `SetNpcDialogue` uncle → second dialogue |
+   | `beat_uncle_reacts_to_trade` | `ClueShared` | any clue + `NPC_Uncle` | `PlayDialogue` uncle's reaction (queued until the share panel closes) |
+   | `beat_police_wrong_call` | `PoliceCallResolved` | `WrongEvidence` | `PlayDialogue` police reaction · `SetTension Alert` |
+
+3. Tag the scene: add `StoryActor` to every NPC and story item instance, one per room, `_id` shared across a character's copies (`npc_uncle`), `_room` set to the room it sits in. The phone from plan 06 gets `item_phone` and starts **inactive**.
+4. Add four `HidingSpot` objects, one per room, each with a `Collider2D` and its `RoomId`.
+5. Build the `HideConfirmPanel` prefab (`Assets/Game/Prefabs/UI/`) on the existing canvas: one TMP line + two buttons. **`HideConfirmView` goes on a wrapper object that stays active, and its `_panel` field points at the child panel, which starts disabled** — a component on a disabled object never runs `Awake`, so putting the view on the panel itself would leave the buttons unwired forever. Wire the two buttons into the view, and the view into all four hiding spots and `ClickRouter`'s new guard.
+6. Empty GameObject `StoryDirector` in the scene holding `StoryDirectorBehaviour`, `StorySceneBinder`, `DayNightCycle`, `NightSurvivalChecker`. Wire every channel asset and drag the beat assets, the actors and the NPC interactables into their arrays — plus the `DialogueController` and `ExchangeController` references the binder's queue needs.
+7. When plan 06 merges: point its `PoliceCallController` at `CH_DayStarted`, **add the `CH_PoliceCallResolved` raise** at the end of `SubmitEvidence`, and **delete `DebugDayAdvancer`** and its scene object.
+
+## Tests
+
+`Assets/Tests/Editor/`, EditMode, domain only. **Written and green** — Aug 29: the Domain is implemented and all 39 cases pass. They were run outside Unity (`dotnet test` over the pure-C# Domain in a scratch project) because the editor was open and holding the project lock; re-run them in Test Runner ▸ EditMode to confirm inside Unity.
+
+**`StoryDirectorTests.cs`** — `Notify_MatchingTriggerAndId_FiresBeat` · `Notify_DifferentTrigger_DoesNotFire` · `Notify_WildcardPrimaryId_FiresForAnyPayload` · `Notify_ClueSharedWithOtherNpc_DoesNotFire` · `Notify_BeatAlreadyFired_DoesNotFireAgain` · `Notify_RepeatableBeat_FiresEveryTime` · `Notify_MissingRequiredFlag_DoesNotFire` · `Notify_ForbiddenFlagSet_DoesNotFire` · `Notify_BelowMinDay_DoesNotFire` · `Notify_DayStartedAtMinDay_FiresOnTheSameEvent` · `Notify_SeveralMatchingBeats_FiresInDeclarationOrder` · `SetFlag_ThenNotify_FiresGatedBeat` · `Ctor_DuplicateBeatIds_Throws` · `Ctor_NullBeats_Throws` · `Notify_PoliceCallResolvedWithMatchingOutcome_FiresBeat` · `Notify_PoliceCallResolvedWithOtherOutcome_DoesNotFire` · `Notify_DifferentPrimaryId_DoesNotFire` · `Notify_ClueSharedWithMatchingNpc_FiresBeat` · `Notify_DayStarted_UpdatesCurrentDay` · `Notify_RoomEnteredMatchingRoom_FiresBeat` · `Notify_RoomEnteredOtherRoom_DoesNotFire` · `Notify_NoMatchingBeat_ReturnsEmpty` · `HasFired_BeatNeverTriggered_IsFalse` **(23)**
+
+**`DayClockTests.cs`** — `Tick_ReducesRemaining` · `Spend_ReducesRemaining` · `Tick_PastZero_ClampsToZeroAndExpires` · `ResetForNewDay_RestoresFullDay` · `Ctor_NonPositiveSecondsPerDay_Throws` · `Tick_NegativeDelta_Throws` · `NormalizedRemaining_HalfSpent_IsHalf` · `Ctor_NewClock_StartsFull` · `Spend_NegativeCost_Throws` · `Spend_PastZero_ClampsToZeroAndExpires` **(10)**
+
+**`NightCheckTests.cs`** — `Survives_HiddenInSafeRoom_True` · `Survives_NotHidden_FalseWithDayClockExpired` · `Survives_HiddenInLeakedRoom_FalseWithHidInLeakedRoom` · `Survives_NoLeakedRooms_True` · `Survives_NullLeakedRooms_TreatedAsEmpty` · `Survives_NotHiddenAndNoLeaks_FalseWithDayClockExpired` **(6)**
+
+**39 cases**, all runnable without a scene.
+
+**Not covered by tests, and knowingly so:** the deferred dialogue queue and the hide prompt are Presentation — they need a `DialogueController`, a panel and a canvas, and PlayMode tests are off the table for the jam (`CLAUDE.md`). They get **manual checks** instead, on the checklist: trade a clue with the Uncle and confirm his reaction plays *after* the share panel closes, not on top of it; make a wrong police call and confirm the same; click a hiding spot, cancel, and confirm the day did not end and no time was charged.
+
+## Out of scope
+
+- **End screens** (`GameEndView`, retry button) and the **police call** — plan 06, Janhavi. This plan only raises `CH_GameLost` / `CH_DayStarted`.
+- **Raising `CH_RoomChanged`** — room navigation's job (Janhavi).
+- **Hiding spot art, the clock UI widget, and the visual design of the hide prompt** — Irene / a later pass. `HidingSpot`, `NormalizedRemaining` and the `HideConfirmPanel` prefab are the seams they plug into; what ships here is a grey box with two buttons that works.
+- **A hard day cap.** The 3-day ceiling comes from 2 police lives, not from a rule here. If a player who never calls the police needs to be stopped, that is one serialized `_maxDays` and a `LossReason` value plan 06 owns — Gus's call, not a silent addition.
+- **Not Grandma's night patrol, NPC pathfinding, save/load, randomized traitor.** Cut or Nice-to-Have.
+- **Any player-facing text.** Beat ids and flag names are configuration; every line the player reads stays a human-written placeholder.

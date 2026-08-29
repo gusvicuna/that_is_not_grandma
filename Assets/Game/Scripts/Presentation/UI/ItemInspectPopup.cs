@@ -4,11 +4,17 @@ using UnityEngine;
 
 namespace Game.Presentation
 {
+    /// <summary>
+    /// Shows an item's description. It is a modal: <see cref="ClickRouter"/> closes it with the next
+    /// click anywhere instead of a dedicated button.
+    /// </summary>
     public class ItemInspectPopup : MonoBehaviour
     {
         [SerializeField] private GameObject _popup;
         [SerializeField] private TMPro.TextMeshProUGUI _inspectText;
         [SerializeField] private ItemEventChannelSO _itemInspectedEventChannel;
+
+        public bool IsOpen => _popup != null && _popup.activeSelf;
 
         private void OnEnable()
         {
