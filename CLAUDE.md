@@ -171,6 +171,8 @@ Protection is deliberately asymmetric right now:
 
 `dev` is left open while `PoliceCaseTests` is red (`PoliceCase` is a not-yet-implemented red test from `plan: police call`). Once the suite is green, the same ruleset should be applied to `dev`.
 
+`.github/workflows/deploy-itch.yml` builds WebGL with GameCI and pushes it to itch.io with `butler`. It is **`workflow_dispatch` only** — no push or PR trigger — so nothing reaches the public page without someone pressing Run workflow. It needs the `ITCH_TARGET` repo variable plus the `BUTLER_API_KEY` and `UNITY_LICENSE` secrets; a preflight step fails with a readable message if any is missing. Cold-cache runs take 25-45 min, so during the jam the fast path is still `butler push Builds/Web <user>/<game>:html` from the machine that built it.
+
 ## Priorities when in doubt
 
 1. A start-to-finish playable build beats any elegant subsystem — vertical slice deadline is **Wed Aug 26**.
