@@ -2,6 +2,10 @@ using System;
 
 namespace Game.Domain
 {
+    /// <summary>
+    /// Per-bus linear volume plus a global mute. Mute is a flag, not a value: the sliders keep what
+    /// the player set, and only EffectiveLinear goes silent.
+    /// </summary>
     public class VolumeSettings
     {
         public float Master { get; private set; }
@@ -11,49 +15,46 @@ namespace Game.Domain
 
         public event Action Changed;
 
-        // Mute is a flag, not a value: the sliders keep whatever the player set, and only
-        // EffectiveLinear goes silent. Zeroing the values instead loses them on unmute.
         private bool _isMuted;
 
         public VolumeSettings(float master = 1f, float music = 1f, float sfx = 1f, float ambience = 1f)
         {
-            //Every value clamped between 0 and 1 without using mathf
-            Master = master < 0f ? 0f : (master > 1f ? 1f : master);
-            Music = music < 0f ? 0f : (music > 1f ? 1f : music);
-            Sfx = sfx < 0f ? 0f : (sfx > 1f ? 1f : sfx);
-            Ambience = ambience < 0f ? 0f : (ambience > 1f ? 1f : ambience);
-        }
-
-        public float Get(AudioBus bus)
-        {
-            return bus switch
-            {
-                AudioBus.Master => Master,
-                AudioBus.Music => Music,
-                AudioBus.Sfx => Sfx,
-                AudioBus.Ambience => Ambience,
-                _ => throw new ArgumentOutOfRangeException(nameof(bus), bus, null)
-            };
-        }
-
-        public void Set(AudioBus bus, float value)
-        {
-            value = value < 0f ? 0f : (value > 1f ? 1f : value);
-            if (!(value == Get(bus)))
-            {
-                switch (bus)
-                {
-                    case AudioBus.Master: Master = value; break;
-                    case AudioBus.Music: Music = value; break;
-                    case AudioBus.Sfx: Sfx = value; break;
-                    case AudioBus.Ambience: Ambience = value; break;
-                    default: throw new ArgumentOutOfRangeException(nameof(bus), bus, null);
-                }
-                Changed?.Invoke();
-            }
+            Master = Clamp01(master);
+            Music = Clamp01(music);
+            Sfx = Clamp01(sfx);
+            Ambience = Clamp01(ambience);
         }
 
         public bool IsMuted => _isMuted;
+
+        public float Get(AudioBus bus) => bus switch
+        {
+            AudioBus.Master => Master,
+            AudioBus.Music => Music,
+            AudioBus.Sfx => Sfx,
+            AudioBus.Ambience => Ambience,
+            _ => throw new ArgumentOutOfRangeException(nameof(bus), bus, null)
+        };
+
+        public void Set(AudioBus bus, float value)
+        {
+            value = Clamp01(value);
+            if (value == Get(bus))
+            {
+                return;
+            }
+
+            switch (bus)
+            {
+                case AudioBus.Master: Master = value; break;
+                case AudioBus.Music: Music = value; break;
+                case AudioBus.Sfx: Sfx = value; break;
+                case AudioBus.Ambience: Ambience = value; break;
+                default: throw new ArgumentOutOfRangeException(nameof(bus), bus, null);
+            }
+
+            Changed?.Invoke();
+        }
 
         public void SetMuted(bool muted)
         {
@@ -61,24 +62,25 @@ namespace Game.Domain
             {
                 return;
             }
+
             _isMuted = muted;
             Changed?.Invoke();
         }
 
+        /// <summary>What the mixer actually receives: every bus rides the master, and mute wins.</summary>
         public float EffectiveLinear(AudioBus bus)
         {
-            if (IsMuted)
+            if (_isMuted)
             {
                 return 0f;
             }
-            if (bus == AudioBus.Master)
-            {
-                return Master;
-            }
-            else
-            {
-                return Get(bus) * Master;
-            }
+            return bus == AudioBus.Master ? Master : Get(bus) * Master;
+        }
+
+        private static float Clamp01(float value)
+        {
+            if (value < 0f) return 0f;
+            return value > 1f ? 1f : value;
         }
     }
 }

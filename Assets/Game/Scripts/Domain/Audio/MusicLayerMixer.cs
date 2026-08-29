@@ -1,89 +1,88 @@
+using System;
+
 namespace Game.Domain
 {
+    /// <summary>
+    /// Current-vs-target weight per music layer, with asymmetric fades: music should sneak in faster
+    /// than it leaves, or the change reads as a bug.
+    /// </summary>
     public class MusicLayerMixer
     {
-        public float BedLayer { get; private set; }
-        public float ApproachLayer { get; private set; }
-        public float LieLayer { get; private set; }
+        private const float _snapThreshold = 0.001f;
+
         private readonly float _fadeInPerSecond;
         private readonly float _fadeOutPerSecond;
-        private float _bedTarget;
-        private float _approachTarget;
-        private float _lieTarget;
+        private readonly float[] _currentWeights;
+        private readonly float[] _targetWeights;
 
         public MusicLayerMixer(float fadeInPerSecond, float fadeOutPerSecond)
         {
             if (fadeInPerSecond <= 0f)
-                throw new System.ArgumentOutOfRangeException(nameof(fadeInPerSecond), fadeInPerSecond, "Fade in per second must be positive.");
+                throw new ArgumentOutOfRangeException(nameof(fadeInPerSecond), fadeInPerSecond, "Fade in per second must be positive.");
             if (fadeOutPerSecond <= 0f)
-                throw new System.ArgumentOutOfRangeException(nameof(fadeOutPerSecond), fadeOutPerSecond, "Fade out per second must be positive.");
+                throw new ArgumentOutOfRangeException(nameof(fadeOutPerSecond), fadeOutPerSecond, "Fade out per second must be positive.");
+
             _fadeInPerSecond = fadeInPerSecond;
             _fadeOutPerSecond = fadeOutPerSecond;
+
+            int layerCount = Enum.GetValues(typeof(MusicLayerId)).Length;
+            _currentWeights = new float[layerCount];
+            _targetWeights = new float[layerCount];
         }
 
         public void SetTarget(MusicLayerId layer, float weight01)
         {
-            if (weight01 < 0f) weight01 = 0f;
-            else if (weight01 > 1f) weight01 = 1f;
+            _targetWeights[IndexOf(layer)] = Clamp01(weight01);
+        }
 
-            switch (layer)
-            {
-                case MusicLayerId.Bed:
-                    _bedTarget = weight01;
-                    break;
-                case MusicLayerId.Approach:
-                    _approachTarget = weight01;
-                    break;
-                case MusicLayerId.Lie:
-                    _lieTarget = weight01;
-                    break;
-                default:
-                    throw new System.ArgumentOutOfRangeException(nameof(layer), layer, null);
-            }
+        public float GetWeight(MusicLayerId layer)
+        {
+            return _currentWeights[IndexOf(layer)];
         }
 
         public void Tick(float deltaTime)
         {
             if (deltaTime < 0f)
-                throw new System.ArgumentOutOfRangeException(nameof(deltaTime), deltaTime, "Delta time cannot be negative.");
+                throw new ArgumentOutOfRangeException(nameof(deltaTime), deltaTime, "Delta time cannot be negative.");
 
-            BedLayer = MoveToward(BedLayer, _bedTarget, deltaTime);
-            ApproachLayer = MoveToward(ApproachLayer, _approachTarget, deltaTime);
-            LieLayer = MoveToward(LieLayer, _lieTarget, deltaTime);
-        }
-
-        public float GetWeight(MusicLayerId layer)
-        {
-            return layer switch
+            for (int i = 0; i < _currentWeights.Length; i++)
             {
-                MusicLayerId.Bed => BedLayer,
-                MusicLayerId.Approach => ApproachLayer,
-                MusicLayerId.Lie => LieLayer,
-                _ => throw new System.ArgumentOutOfRangeException(nameof(layer), layer, null),
-            };
+                _currentWeights[i] = MoveToward(_currentWeights[i], _targetWeights[i], deltaTime);
+            }
         }
 
         public void SnapToTargets()
         {
-            BedLayer = _bedTarget;
-            ApproachLayer = _approachTarget;
-            LieLayer = _lieTarget;
+            Array.Copy(_targetWeights, _currentWeights, _targetWeights.Length);
         }
 
         private float MoveToward(float current, float target, float deltaTime)
         {
-            float diff = target - current;
-            if (diff > 0.001f)
+            float difference = target - current;
+
+            if (difference > _snapThreshold)
             {
-                float next = current + _fadeInPerSecond * deltaTime;
-                return (next > target) ? target : next;
+                return Math.Min(target, current + _fadeInPerSecond * deltaTime);
             }
-            if (diff < -0.001f)
+            if (difference < -_snapThreshold)
             {
-                float next = current - _fadeOutPerSecond * deltaTime;
-                return (next < target) ? target : next;
+                return Math.Max(target, current - _fadeOutPerSecond * deltaTime);
             }
             return target;
+        }
+
+        private static int IndexOf(MusicLayerId layer)
+        {
+            if (!Enum.IsDefined(typeof(MusicLayerId), layer))
+                throw new ArgumentOutOfRangeException(nameof(layer), layer, "Invalid music layer.");
+
+            return (int)layer;
+        }
+
+        private static float Clamp01(float value)
+        {
+            if (value < 0f) return 0f;
+            return value > 1f ? 1f : value;
         }
     }
 }

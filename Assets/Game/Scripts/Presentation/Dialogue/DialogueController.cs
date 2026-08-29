@@ -10,8 +10,8 @@ namespace Game.Presentation
     {
         public event Action OnNodeChanged;
 
-        [SerializeField] private DialogueRequestedEventChannelSO _dialogueRequestedEventChannel;
-        [SerializeField] private DialogueFinishedEventChannelSO _dialogueFinishedEventChannel;
+        [SerializeField] private DialogueEventChannelSO _dialogueRequestedEventChannel;
+        [SerializeField] private DialogueEventChannelSO _dialogueFinishedEventChannel;
 
         private DialogueRunner _dialogueRunner;
         private DialogueSO _currentDialogue;

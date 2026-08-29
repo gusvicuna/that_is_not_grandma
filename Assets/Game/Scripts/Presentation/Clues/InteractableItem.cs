@@ -9,8 +9,8 @@ namespace Game.Presentation
     {
         [SerializeField] private ClueSO _clue;
         [SerializeField] private ItemSO _item;
-        [SerializeField] private ClueCollectedEventChannelSO _clueCollectedEventChannel;
-        [SerializeField] private ItemInspectedEventChannelSO _itemInspectedEventChannel;
+        [SerializeField] private ClueEventChannelSO _clueCollectedEventChannel;
+        [SerializeField] private ItemEventChannelSO _itemInspectedEventChannel;
 
         public void Interact()
         {

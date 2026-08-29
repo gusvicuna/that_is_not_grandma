@@ -8,7 +8,7 @@ namespace Game.Presentation
     {
         [SerializeField] private GameObject _popup;
         [SerializeField] private TMPro.TextMeshProUGUI _inspectText;
-        [SerializeField] private ItemInspectedEventChannelSO _itemInspectedEventChannel;
+        [SerializeField] private ItemEventChannelSO _itemInspectedEventChannel;
 
         private void OnEnable()
         {

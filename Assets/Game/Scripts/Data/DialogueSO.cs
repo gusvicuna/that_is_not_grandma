@@ -13,6 +13,8 @@ namespace Game.Data
         public IReadOnlyList<DialogueNodeData> Nodes => _nodes;
         [SerializeField] private bool _allowsClueExchange;
         public bool AllowsClueExchange => _allowsClueExchange;
+        [SerializeField] private bool _playsLieMotif = false;
+        public bool PlaysLieMotif => _playsLieMotif;
 
         public DialogueGraph ToGraph()
         {
