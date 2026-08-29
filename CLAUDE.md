@@ -112,19 +112,17 @@ Assets/
 
 ### ScriptableObject event channels
 
-One channel asset per game signal, listed in the feature plan. Pattern:
+One channel asset per game signal — but **one channel *class* per payload type** (revised Aug 28). Unity can't create assets from an open generic `ScriptableObject`, so each payload type gets a one-line concrete subclass and the signals are distinguished by the **asset**, not by the class:
 
 ```csharp
-// Events/ClueCollectedEventChannelSO.cs
-[CreateAssetMenu(menuName = "Game/Events/Clue Collected")]
-public class ClueCollectedEventChannelSO : ScriptableObject
-{
-    public event Action<ClueSO> Raised;
-    public void Raise(ClueSO clue) => Raised?.Invoke(clue);
-}
+// Events/ClueEventChannelSO.cs
+[CreateAssetMenu(fileName = "CH_Clue", menuName = "Game/Events/Clue")]
+public class ClueEventChannelSO : EventChannelSO<ClueSO> { }
 ```
 
-Rules: raisers and listeners reference the channel via `[SerializeField]`, wired in the inspector — never `Resources.Load` or static access. Listeners subscribe in `OnEnable`, **always** unsubscribe in `OnDisable`. Channel assets live in `Assets/Game/ScriptableObjects/Channels/`. Use a `VoidEventChannelSO` for payload-less signals (e.g. `NightStarted`). No singletons, no static event buses, no `FindObjectOfType`.
+`EventChannelSO<T>` carries `Raised` / `Raise(T)`; the non-generic `EventChannelSO` above it carries the `_description` field and, editor-only, the listener count and the inspector **Raise** button (`Assets/Game/Scripts/Editor/EventChannelSOEditor.cs`) — select any channel asset in play mode to fire it by hand. `VoidEventChannelSO` (payload-less, e.g. `NightStarted`) and `NpcClueEventChannelSO` (two payloads) derive from the non-generic base directly.
+
+Rules: raisers and listeners reference the channel via `[SerializeField]`, wired in the inspector — never `Resources.Load` or static access. Listeners subscribe in `OnEnable`, **always** unsubscribe in `OnDisable`. Channel assets live in `Assets/Game/ScriptableObjects/Channels/`, named for the *signal* (`CH_RoomChanged`, `CH_RoomLeaked`), with `_description` filled in — when two signals share a payload type the class no longer tells them apart, so the asset name and description are what keep them straight. No singletons, no static event buses, no `FindObjectOfType`.
 
 ### Code style
 

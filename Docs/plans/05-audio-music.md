@@ -97,7 +97,7 @@ Namespace `Game.Data`. Assets live in `Assets/Game/ScriptableObjects/Audio/`; th
 - `DialogueSO` *(modified)*: `bool _playsLieMotif` (public `PlaysLieMotif`), **off by default** — same gating pattern as `_allowsClueExchange`. No other dialogue change; the dialogue Domain and its tests are untouched.
 
 ## Presentation
-Namespace `Game.Presentation`, new folder `Assets/Game/Scripts/Presentation/Audio/`. Thin components: they own `AudioSource`s and translate domain weights into volumes. No rules.
+Namespace `Game.Presentation`, folder `Assets/Game/Scripts/Presentation/Audio/`. Thin components: they own `AudioSource`s and translate domain weights into volumes. No rules. **All eight written Aug 28** (plus the three Data assets they depend on) — what remains is editor wiring.
 
 | Component | Responsibility | Channels |
 |---|---|---|
@@ -120,8 +120,8 @@ Every constraint below is documented, not folklore — sources in `Docs/research
 - **No `PlayScheduled`, no `dspTime`.** There's a known WebGL issue where the scheduled clip starts early and two copies of the track play over each other. Layers start together and run for the whole session; only volumes move.
 - **Loop seams are a build-only bug.** AAC encoding on Web alters the first 1024 samples, so a loop that is seamless in the editor can click in the browser. GDD §8's "no audible loop seams ☐" is checked **in the uploaded build**; if a loop clicks, pad the clip rather than fight the encoder.
 - **Positive pitch only** on Web. The cue's `[Range(0.5f, 2f)]` is fine; a negative pitch is not an option for reversed effects.
-- **Import settings** (checklist step 9): WebGL does **not** support streaming. Long ambience/music → *Compressed In Memory*, Vorbis, quality ≈ 60, **Force To Mono** on; short SFX → *Decompress On Load*, Vorbis, mono. Disable *Preload Audio Data* on the music layers so the first frame isn't waiting on them.
-- **Budget:** keep total audio under ~10 MB compressed and check the build report after the next re-upload. Three 90 s mono layers at Vorbis 60 is roughly 1 MB — the danger is an uncompressed WAV sneaking in, not the layer count.
+- **Import settings** (checklist step 9): **never Streaming** — browsers don't support dynamic streaming, it's the one Load Type that simply doesn't work. On the Web override tab Unity encodes to AAC for the browser to decode, so the format isn't really a choice; the levers are Load Type, Force To Mono, Preload Audio Data and Sample Rate.
+- **Budget:** keep total audio under ~10 MB compressed and check the build report after the next re-upload. Three 90 s mono layers is roughly 1 MB — the danger is an uncompressed WAV sneaking in, not the layer count.
 - `PlayerPrefs` on WebGL lands in IndexedDB — fine, but call `PlayerPrefs.Save()` on every change; a tab closed without it loses the setting.
 
 ## Editor setup checklist
@@ -134,12 +134,53 @@ All manual work by Gus. Steps 1–3 can happen before the code exists.
 5. Cue assets in `ScriptableObjects/Audio/Cues/` (`Game/Audio/Cue`) — the five criticals from GDD §8 plus UI and the night beat: `SFX_Interact` (main action), `SFX_ClueCollected` (reward), `SFX_Alert` (suspicion), `SFX_Reveal` (betrayal — reused as *caught*), `SFX_Error` (loss), `SFX_UIClick`, `SFX_RoomChange`, `SFX_Hide`, `SFX_NightSurvived`, `SFX_Morning`, `SFX_Phone`. Set `_bus = Sfx`; give at least one cue 2–3 clip variations so the no-repeat path is actually exercised.
 6. `AMB_House` (`Game/Audio/Ambience Bank`) with the 4 rooms **plus the night clip**. Map only 3 rooms at first — the unmapped one verifies the fade-to-silence path.
 7. `MUS_Main` (`Game/Audio/Music Layer Set`) with `Bed`, `Approach`, `Lie`, same length and tempo (authoring contract above).
-8. Scene wiring in `ClueSandbox`: an `Audio` prefab with children `AudioUnlocker`, `VolumeController`, `SfxPlayer`, `AmbienceController`, `MusicLayerPlayer`, `MusicDirector`, `AudioCueRouter`. Assign **every** `AudioSource`'s *Output* to its mixer group — a source with no output bypasses the mixer and ignores the sliders, the single most common wiring bug here. Wire the mixer + the 4 exposed names into `VolumeController`, and every channel into its listener.
-9. Audio import settings pass, per the WebGL table above. Do this **before** the next build, not after.
+8. **Scene wiring in `ClueSandbox`.** Build one `Audio` prefab with this hierarchy:
+
+   ```
+   Audio                          ← prefab root, empty GameObject
+   ├── AudioUnlocker              [AudioUnlocker]
+   ├── VolumeController           [VolumeController]
+   ├── SfxPlayer                  [SfxPlayer]        ← no children: it builds its pool at runtime
+   ├── Ambience                   [AmbienceController]
+   │   ├── AmbienceSourceA        [AudioSource]  Output → Ambience
+   │   └── AmbienceSourceB        [AudioSource]  Output → Ambience
+   ├── Music                      [MusicLayerPlayer] + [MusicDirector]
+   │   ├── LayerBed               [AudioSource]  Output → Music
+   │   ├── LayerApproach          [AudioSource]  Output → Music
+   │   └── LayerLie               [AudioSource]  Output → Music
+   └── AudioCueRouter             [AudioCueRouter]
+   ```
+
+   **You create 5 `AudioSource`s by hand — none of them for SFX.** `SfxPlayer` instantiates its own pooled sources in `Awake` and assigns their group from its two serialized `AudioMixerGroup` fields; the ambience and music sources are serialized references, so they must already exist. On those 5, the **only** setting that matters manually is *Output*: `loop`, `playOnAwake`, `spatialBlend` and `volume` are all written in `Awake`, so ignore how they look in the inspector. **A source with no Output bypasses the mixer and ignores the sliders** — the single most common wiring bug here.
+
+   `VolumeSettingsPanelView` does *not* live in this prefab: it goes on the Canvas with the `VolumeController` reference plus its 3 sliders and mute toggle.
+
+   | Component | Wire into it |
+   |---|---|
+   | `AudioUnlocker` | the **same** Click `InputActionReference` `ClickRouter` uses · `CH_AudioUnlocked` |
+   | `VolumeController` | `MX_Game` (the 4 parameter names already default to the right strings) |
+   | `SfxPlayer` | `CH_SfxRequested` · SFX group · Ambience group · pool size (8) |
+   | `AmbienceController` | `AMB_House` · the two ambience sources · `CH_RoomChanged` · `CH_NightStarted` · `CH_DayStarted` · `CH_AudioUnlocked` |
+   | `MusicLayerPlayer` | `MUS_Main` · Size 3, one row per `MusicLayerId` + its source (clips come from the set, don't assign them) · `CH_AudioUnlocked` |
+   | `MusicDirector` | the `MusicLayerPlayer` · `CH_TensionChanged` · `CH_NightStarted` · `CH_DayStarted` |
+   | `AudioCueRouter` | `CH_SfxRequested` · the `MusicDirector` · the 9 listened channels · the 9 cue assets (all optional) |
+
+   ⚠️ Since channels are now one class per payload type, the inspector **cannot** stop you from dropping the wrong asset in: `CH_AudioUnlocked` and `CH_NightStarted` are both `VoidEventChannelSO`, and `CH_RoomChanged` and `CH_RoomLeaked` are both `RoomIdEventChannelSO`. Check those four by name. In play mode each channel asset shows its listener count, which catches the mistake in seconds.
+9. **Audio import settings pass.** Select the clips in the Project window (multi-select a whole folder — the Inspector edits them in bulk, so this is three selections: SFX, Ambience, Music) and set:
+
+   | Setting | Short SFX | Ambience & music |
+   |---|---|---|
+   | Load Type | Decompress On Load | Compressed In Memory |
+   | Force To Mono | ✔ | ✔ |
+   | Preload Audio Data | leave default | ✘ — so the first frame doesn't wait on them |
+   | Sample Rate | Override → 22050 Hz | 22050 Hz ambience · 44100 only if the music needs it |
+   | Quality | ≈ 60 | ≈ 60 |
+
+   **Never pick Streaming** — browsers don't support it. Do this pass **before** the next build, not after: import settings change nothing in the editor, which plays the source file. A project carrying 40 MB of WAV sounds identical in play mode and then ships a build nobody waits for.
 10. Settings panel prefab: 3 sliders + mute toggle + `VolumeSettingsPanelView`, wired to `VolumeController`. Drop it in the sandbox canvas for now; it moves into the pause menu untouched later.
-11. **Temporary drivers** (navigation and the day/night loop don't exist yet): a small debug component of yours with 4 buttons raising `CH_RoomChanged`, 3 raising `CH_TensionChanged`, and 3 more for `CH_NightStarted` / `CH_NightResolved(true|false)` / `CH_DayStarted`. Sandbox scene only; delete it when the real systems land.
+11. **Temporary drivers — none needed** *(Aug 28)*. Navigation and the day/night loop don't exist yet, but `EventChannelSOEditor` puts a **Raise** button on every channel asset: select `CH_RoomChanged`, `CH_TensionChanged`, `CH_NightStarted`, `CH_NightResolved` or `CH_DayStarted` in play mode, set its editor payload and fire it. The inspector also shows the listener count, which is the fastest way to catch a channel wired to the wrong asset.
 12. Tick `_playsLieMotif` on **`DLG_Test_Branching` only**, so both the pulse and the no-pulse path are reachable.
-13. Smoke test **in a WebGL build, not the editor**: no sound before the first click · sliders move the right buses and survive a page reload · switching rooms crossfades without stacking · Calm→Alert brings the approach layer in and back out · night cuts to the night ambience and morning returns to the room's · an empty cue plays nothing and throws nothing.
+13. Smoke test **in a WebGL build, not the editor** — the quick version below; the full pass, for when the real clips are in, is `Docs/audio-test-checklist.md`: no sound before the first click · sliders move the right buses and survive a page reload · switching rooms crossfades without stacking · Calm→Alert brings the approach layer in and back out · night cuts to the night ambience and morning returns to the room's · an empty cue plays nothing and throws nothing.
 14. **Mix pass with the mixer open in *Edit in Play Mode*** (Thursday's task in the day-2 plan): play the sandbox, arm the button on the AudioMixer window, balance the buses and the layer volumes by ear — the values stick when you exit play mode. This is the tool that replaces a tuning script; don't hardcode a mix in a component.
 15. Run Test Runner → EditMode until the six new test files are green.
 16. `CREDITS.md`: one row per audio asset, the day it enters the repo — licensed packs included, license column filled.

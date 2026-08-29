@@ -2,27 +2,42 @@ using System;
 
 namespace Game.Domain
 {
+    /// <summary>
+    /// Picks clip variations without ever repeating the previous one — the difference between
+    /// footsteps and a machine gun. Randomness is injected so a sequence is reproducible.
+    /// </summary>
     public class NoRepeatPicker
     {
         private readonly int _count;
-        private readonly Random _rng;
-        private int _last = -1;
+        private readonly Random _random;
+        private int _lastIndex = -1;
 
-        public NoRepeatPicker(int count, Random rng)
+        public NoRepeatPicker(int count, Random random)
         {
-            if (count < 1) throw new ArgumentOutOfRangeException(nameof(count), "count must be >= 1");
+            if (count < 1)
+                throw new ArgumentOutOfRangeException(nameof(count), count, "Count must be at least 1.");
+
             _count = count;
-            _rng = rng ?? throw new ArgumentNullException(nameof(rng));
+            _random = random ?? throw new ArgumentNullException(nameof(random));
         }
 
         public int Next()
         {
-            if (_count == 1) return 0;
+            // A single variation must not send the retry loop spinning forever.
+            if (_count == 1)
+            {
+                return 0;
+            }
 
-            int pick;
-            do { pick = _rng.Next(_count); } while (pick == _last);
-            _last = pick;
-            return pick;
+            int index;
+            do
+            {
+                index = _random.Next(_count);
+            }
+            while (index == _lastIndex);
+
+            _lastIndex = index;
+            return index;
         }
     }
 }
