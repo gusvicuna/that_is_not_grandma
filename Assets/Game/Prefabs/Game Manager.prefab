@@ -1,5 +1,56 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &535542474452268732
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8728069243951283944}
+  - component: {fileID: 2210982151655198834}
+  m_Layer: 0
+  m_Name: Room Controller
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8728069243951283944
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 535542474452268732}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2239056493139447486}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2210982151655198834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 535542474452268732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae0fb4e6cfa2a2446a545bcac741b419, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RoomController
+  rooms:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  roomIds: 00000000010000000200000003000000
+  _roomChanged: {fileID: 11400000, guid: 3f06078a967a0b54ca1d70159e0bbdb3, type: 2}
 --- !u!1 &1934166061312573656
 GameObject:
   m_ObjectHideFlags: 0
@@ -54,7 +105,7 @@ MonoBehaviour:
   _startDayOnStart: 1
   _exchangeController: {fileID: 2077834116845280953}
   _itemInspectPopup: {fileID: 0}
-  _dayStarted: {fileID: 11400000, guid: 0b4fc967165465c49b267009e5e2f5a5, type: 2}
+  _dayStarted: {fileID: 0}
   _nightStarted: {fileID: 11400000, guid: 309cb270ce0ebc6488cd2f7776c8b45a, type: 2}
   _nightResolved: {fileID: 11400000, guid: ce2fcfc381f9c1c419075c1b9878c4e7, type: 2}
   _nightSequenceFinished: {fileID: 11400000, guid: 6c5b25c807425ae4aa132d36f39979a6, type: 2}
@@ -76,7 +127,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.Presentation.NightSurvivalChecker
   _nightStarted: {fileID: 11400000, guid: 309cb270ce0ebc6488cd2f7776c8b45a, type: 2}
   _playerHid: {fileID: 11400000, guid: 2c1b368fdb9e3ae43bf9a5c1f79df7e1, type: 2}
-  _roomChanged: {fileID: 11400000, guid: 0f7e0258f97ab0a4ea9a0c192bb380c6, type: 2}
+  _roomChanged: {fileID: 11400000, guid: 3f06078a967a0b54ca1d70159e0bbdb3, type: 2}
   _roomLeaked: {fileID: 11400000, guid: a0125c815b591ee4f97f788e8c021889, type: 2}
   _nightResolved: {fileID: 11400000, guid: ce2fcfc381f9c1c419075c1b9878c4e7, type: 2}
   _gameLost: {fileID: 11400000, guid: 02879f108f5438d4790b17089a0a2c42, type: 2}
@@ -132,7 +183,7 @@ MonoBehaviour:
   _itemInspected: {fileID: 11400000, guid: a307042258a4664428942a8c60e05831, type: 2}
   _dialogueFinished: {fileID: 11400000, guid: 3a93570ec78c46a44aea9429b557fad3, type: 2}
   _clueShared: {fileID: 11400000, guid: 7b66c06f6fdab9440bbb5d39256d3e43, type: 2}
-  _roomChanged: {fileID: 11400000, guid: 0f7e0258f97ab0a4ea9a0c192bb380c6, type: 2}
+  _roomChanged: {fileID: 11400000, guid: 3f06078a967a0b54ca1d70159e0bbdb3, type: 2}
   _dayStarted: {fileID: 11400000, guid: 0b4fc967165465c49b267009e5e2f5a5, type: 2}
   _policeCallResolved: {fileID: 11400000, guid: 3e284c6c8ea7c8847aa1dc043051477e, type: 2}
 --- !u!114 &6921785084632154022
@@ -199,6 +250,7 @@ Transform:
   - {fileID: 2331572935278200549}
   - {fileID: 283082712341829452}
   - {fileID: 7297547041916026591}
+  - {fileID: 8728069243951283944}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4790490216528771497

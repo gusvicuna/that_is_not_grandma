@@ -54,12 +54,22 @@ Reviewed the whole feature after wiring. Three behaviour fixes and one hardening
 8. **`NightResultUI` became `GameEndView`, and it ends every run.** Winning used to show nothing at all — `PoliceCallController` raised `CH_GameWon` into a channel with zero listeners. `NightSequenceView` now listens to it too and fades to black before the panel, so victory and defeat are presented the same way. The view's API is `ShowWin()` / `ShowLoss(reason)`: the old `ShowResult(bool survived, …)` took a flag whose `true` branch did nothing. Its own `CH_GameLost` field is **deleted**, not just left empty — a field nobody can wire is the only fix that survives the next person who sees an empty channel slot and fills it. **All five lines are serialized fields**, editable in the inspector without a recompile: the win is a `[WIN_TEXT]` placeholder, and the four loss lines default to exactly what Janhavi wrote. Because Unity fills a newly added field from its C# default, the components already in `UI.prefab` and `greyboxnav` pick her text up too — nothing to re-enter. The consequence to remember: from now on those lines live in the prefab, so **`UI.prefab` is a content file** and a careless prefab revert loses writing.
 9. **`NightSequenceView` owns `CH_GameLost` and `CH_GameWon`; `GameEndView` only draws.** A loss with no night behind it — the police running out of patience — fades to black the same way before showing the result. The field that caused that is now gone from `GameEndView` entirely.
 
+## Navigation merge (Gus, Aug 30)
+
+Janhavi's room navigation landed on `dev`. What it broke and how it was resolved:
+
+1. **`CH_RoomChanged` had been re-pointed to a second channel class** (`RoomChangedEventChannelSO`, payload `int`, deriving from `ScriptableObject` rather than `EventChannelSO`). Unity silently drops a reference whose type no longer matches, so `AmbienceController`, `AudioCueRouter`, `NightSurvivalChecker` and `StoryDirectorBehaviour` all lost theirs at once: no ambience on room change, no room SFX, leaving a room no longer left the hiding spot, and `RoomEntered` beats could never fire. The duplicate class is deleted and the asset goes back to `RoomIdEventChannelSO`.
+2. **The payload is a `RoomId`, never an array index.** The navigation raised `currentRoom`, the index into its inspector array. Even with the type fixed, an index only matches the enum while somebody keeps the array in the same order — and the failure is silent and awful: the room you burned in the Kitchen would kill you in the Bathroom. `RoomController` now carries a `RoomId[]` parallel to `rooms[]` and logs an error on `Awake` if the two do not line up.
+3. **The starting room announces itself.** `ShowRoom` raises the channel, so `Start` covers the first room too — otherwise its ambience never begins and a beat waiting on it can never fire.
+4. **The navigation arrows go through `ClickRouter`.** They used `OnMouseDown`, a physics callback that ignores every guard the router applies. A `CanvasGroup` blocks uGUI raycasts but not that, so the player could walk between rooms mid-conversation, with the share panel open, and behind the night sequence's black screen.
+5. Two dead channel classes from that branch (`DialogueRequestedEventChannelSO`, `DialogueFinishedEventChannelSO`) referenced by nothing were deleted with it.
+
 ## Dependencies on other plans
 
 | Needs | From | If it isn't on `dev` yet |
 |---|---|---|
 | `LossReason` enum, `GameLostEventChannelSO`, `CH_GameLost` | plan 06 (Janhavi) | Create them **exactly** as plan 06 §Domain/§Events specifies — same file names, same values. Do not invent a second enum. |
-| `CH_RoomChanged` raised on room entry | room navigation (Janhavi; contract set by plan 05) | The `RoomEntered` trigger simply never fires; every other trigger works. Do not raise it from here. |
+| `CH_RoomChanged` raised on room entry | room navigation (Janhavi) | **Satisfied Aug 30** — `RoomController` raises it with a `RoomId`. See the navigation merge section above. |
 | `DialogueSO.Id` is `private` with no getter | plan 02 (this repo) | One-line patch: `public string Id => _id;` |
 | `NpcInteractable._npc` has no getter | plan 03 (this repo) | One-line patch: `public NpcSO Npc => _npc;` plus `public void SetDialogue(DialogueSO dialogue)`. |
 | `CH_PoliceCallResolved` raised after a call | plan 06 (Janhavi) | **One line at the end of `PoliceCallController.SubmitEvidence`:** `_policeCallResolved.Raise(outcome);` plus the serialized field. Everything else — the channel class, the asset, the beats — is created here. Without it, only the exchange reaction works; nothing breaks. |

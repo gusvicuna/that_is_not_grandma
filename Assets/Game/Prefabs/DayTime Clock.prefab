@@ -328,6 +328,7 @@ MonoBehaviour:
   _clockText: {fileID: 2009033023111244675}
   _dayText: {fileID: 8866609438127845887}
   _dayFormat: DAY {0}
+  _firstVisibleDay: 2
   _startHour: 8
   _endHour: 20
   _minuteStep: 5

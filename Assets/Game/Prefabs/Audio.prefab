@@ -470,7 +470,7 @@ MonoBehaviour:
   _sourceA: {fileID: 4200711713273310642}
   _sourceB: {fileID: 2018590280243744077}
   _fadeSeconds: 2
-  _roomChangedChannel: {fileID: 11400000, guid: 0f7e0258f97ab0a4ea9a0c192bb380c6, type: 2}
+  _roomChangedChannel: {fileID: 11400000, guid: 3f06078a967a0b54ca1d70159e0bbdb3, type: 2}
   _nightStartedChannel: {fileID: 11400000, guid: 309cb270ce0ebc6488cd2f7776c8b45a, type: 2}
   _dayStartedChannel: {fileID: 11400000, guid: 0b4fc967165465c49b267009e5e2f5a5, type: 2}
   _audioUnlockedChannel: {fileID: 11400000, guid: e8465a007a8ae8d43a93d5ea87cc4170, type: 2}
@@ -958,7 +958,7 @@ MonoBehaviour:
   _itemInspectedChannel: {fileID: 11400000, guid: a307042258a4664428942a8c60e05831, type: 2}
   _clueCollectedChannel: {fileID: 11400000, guid: 71308b7d6c0f02e4cb244720c3dec9ef, type: 2}
   _clueSharedChannel: {fileID: 11400000, guid: 7b66c06f6fdab9440bbb5d39256d3e43, type: 2}
-  _roomChangedChannel: {fileID: 11400000, guid: 0f7e0258f97ab0a4ea9a0c192bb380c6, type: 2}
+  _roomChangedChannel: {fileID: 11400000, guid: 3f06078a967a0b54ca1d70159e0bbdb3, type: 2}
   _tensionChangedChannel: {fileID: 11400000, guid: 5fad66bbaefb6f84196113f1061275a3, type: 2}
   _dialogueRequestedChannel: {fileID: 11400000, guid: 2c2f8eed39fb2cd4eac93a54c981a8a0, type: 2}
   _nightStartedChannel: {fileID: 11400000, guid: 309cb270ce0ebc6488cd2f7776c8b45a, type: 2}
