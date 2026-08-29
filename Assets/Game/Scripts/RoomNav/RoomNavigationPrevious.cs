@@ -1,13 +1,14 @@
 
 using UnityEngine;
 
-public class RoomNavigation : MonoBehaviour
+public class RoomNavigationPrevious : MonoBehaviour
 {
     public RoomController roomController;
 
     private void OnMouseDown()
     {
-        roomController.GoToNextRoom();
+        roomController.GoToPreviousRoom();
     }
 }
+
 
