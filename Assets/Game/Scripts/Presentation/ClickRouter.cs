@@ -53,11 +53,11 @@ namespace Game.Presentation
             {
                 return;
             }
-            // The inspect popup is closed by the next click anywhere, and that click is consumed:
-            // dismissing it must not also interact with whatever is underneath.
+            // The inspect popup is driven by the next click anywhere, and that click is consumed:
+            // turning its page or dismissing it must not also interact with whatever is underneath.
             if (_itemInspectPopup != null && _itemInspectPopup.IsOpen)
             {
-                _itemInspectPopup.Hide();
+                _itemInspectPopup.Advance();
                 return;
             }
             InteractAtPointer();

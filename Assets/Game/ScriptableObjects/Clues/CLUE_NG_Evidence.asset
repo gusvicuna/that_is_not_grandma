@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 285585a969554204aa943235a7a9bdb8, type: 3}
+  m_Name: CLUE_NG_Evidence
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Data.ClueSO
+  _id: clue_ng_evidence
+  _text: Yes! Grandma needed to take her pills. She would'n miss a single day without
+    taking them.
+  _shortText: Grandma was sick and the pills box was full
+  _roomId: 3
+  _isEvidence: 1

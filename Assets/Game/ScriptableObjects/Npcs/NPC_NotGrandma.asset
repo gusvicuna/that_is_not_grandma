@@ -15,8 +15,8 @@ MonoBehaviour:
   _id: not_grandma
   _displayName: Grandma
   _color: {r: 0.5647059, g: 0.9333334, b: 0.5647059, a: 1}
-  _portrait: {fileID: 0}
-  _worldSprite: {fileID: 0}
+  _portrait: {fileID: 562810183714247851, guid: e27f073ad8c3dd54296db25a486b3147, type: 3}
+  _worldSprite: {fileID: 562810183714247851, guid: e27f073ad8c3dd54296db25a486b3147, type: 3}
   _leaksToNotGrandma: 0
   _exchangeEntries: []
   _fallbackReturnClue: {fileID: 0}

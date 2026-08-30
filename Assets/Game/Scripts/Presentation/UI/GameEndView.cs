@@ -2,6 +2,7 @@ using Game.Domain;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 namespace Game.Presentation
 {
@@ -20,6 +21,16 @@ namespace Game.Presentation
 
         [FormerlySerializedAs("resultText")]
         [SerializeField] private TMP_Text _resultText;
+
+        [Header("Background")]
+        [Tooltip("The panel's background Image. Left empty, the ending shows whatever sprite the panel already had.")]
+        [SerializeField] private Image _background;
+
+        [Tooltip("Background sprite for the one way to win.")]
+        [SerializeField] private Sprite _winSprite;
+
+        [Tooltip("Background sprite shared by every way to lose.")]
+        [SerializeField] private Sprite _loseSprite;
 
         [Header("Endings")]
         [Tooltip("Placeholder until a human writes the real line — the jam forbids AI-written player-facing text.")]
@@ -49,12 +60,12 @@ namespace Game.Presentation
 
         public void ShowWin()
         {
-            Show(_winMessage);
+            Show(_winMessage, _winSprite);
         }
 
         public void ShowLoss(LossReason lossReason)
         {
-            Show(MessageFor(lossReason));
+            Show(MessageFor(lossReason), _loseSprite);
         }
 
         /// <summary>
@@ -80,12 +91,20 @@ namespace Game.Presentation
             }
         }
 
-        private void Show(string message)
+        /// <summary>
+        /// The sprite swap is cosmetic, so it is the one thing here that stays quiet when it is
+        /// not wired: an ending with no art still has to show its text.
+        /// </summary>
+        private void Show(string message, Sprite background)
         {
             if (_panel == null || _resultText == null)
             {
                 Debug.LogError("GameEndView cannot show the ending: its panel or its text is not assigned.", this);
                 return;
+            }
+            if (_background != null && background != null)
+            {
+                _background.sprite = background;
             }
             _resultText.text = message;
             _panel.SetActive(true);

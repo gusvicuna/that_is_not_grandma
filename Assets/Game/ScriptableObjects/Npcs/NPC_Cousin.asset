@@ -19,8 +19,6 @@ MonoBehaviour:
   _worldSprite: {fileID: 0}
   _leaksToNotGrandma: 0
   _exchangeEntries:
-  - _givenClue: {fileID: 11400000, guid: a45a9a5d1462e4f4e8a581c44bceb350, type: 2}
-    _returnedClue: {fileID: 11400000, guid: 44614be636b7a774793b7b81332d9261, type: 2}
-  - _givenClue: {fileID: 11400000, guid: a1adc049f374bf044ab9338b37e959e4, type: 2}
-    _returnedClue: {fileID: 11400000, guid: 839ea222345aa3a4ab8787ba7cb93ae2, type: 2}
-  _fallbackReturnClue: {fileID: 11400000, guid: c5a5db9b0df49d64da94afde99a0e484, type: 2}
+  - _givenClue: {fileID: 11400000, guid: 1386ae6718a2c8749a9098ac5e6a2969, type: 2}
+    _returnedClue: {fileID: 11400000, guid: 615dc7d82ce7a0745a23d9890c586278, type: 2}
+  _fallbackReturnClue: {fileID: 11400000, guid: 1657459ec0636af46b8ebf5001015779, type: 2}

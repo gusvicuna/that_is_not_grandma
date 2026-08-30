@@ -1186,22 +1186,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 97341874}
     m_Modifications:
-    - target: {fileID: 104961933017834677, guid: db58b180f8bce9240adb43a957f97071, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3469916795389423836, guid: db58b180f8bce9240adb43a957f97071, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3886058572016341476, guid: db58b180f8bce9240adb43a957f97071, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.335
-      objectReference: {fileID: 0}
-    - target: {fileID: 3886058572016341476, guid: db58b180f8bce9240adb43a957f97071, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.335
-      objectReference: {fileID: 0}
     - target: {fileID: 3886058572016341476, guid: db58b180f8bce9240adb43a957f97071, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1245,14 +1229,6 @@ PrefabInstance:
     - target: {fileID: 4270003749960741519, guid: db58b180f8bce9240adb43a957f97071, type: 3}
       propertyPath: m_Name
       value: Monitor
-      objectReference: {fileID: 0}
-    - target: {fileID: 4407567308386218903, guid: db58b180f8bce9240adb43a957f97071, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4982254972148538072, guid: db58b180f8bce9240adb43a957f97071, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

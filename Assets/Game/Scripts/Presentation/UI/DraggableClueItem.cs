@@ -31,7 +31,7 @@ namespace Game.Presentation
         {
             _clue = clue;
             _isDraggable = isDraggable;
-            _label.text = clue.Text;
+            _label.text = clue.ShortText;
             _canvasGroup.alpha = isDraggable ? 1f : SharedClueAlpha;
         }
 

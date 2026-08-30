@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fa0fb36a19452347ba407dd1a6317a6, type: 3}
+  m_Name: DLG_Intro_NotGrandma
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Data.DialogueSO
+  _id: dlg_intro_notgrandma
+  _nodes:
+  - _speaker: {fileID: 11400000, guid: 7d07f184b45977343aff295e2e2a471d, type: 2}
+    _speakerType: 0
+    _text: ...
+    _options:
+    - _text: GREET GRANDMA*
+      _targetIndex: 0
+    _nextIndex: 1
+  - _speaker: {fileID: 11400000, guid: 7d07f184b45977343aff295e2e2a471d, type: 2}
+    _speakerType: 0
+    _text: Good... morning... dear.
+    _options: []
+    _nextIndex: 2
+  - _speaker: {fileID: 11400000, guid: 7d07f184b45977343aff295e2e2a471d, type: 2}
+    _speakerType: 0
+    _text: I am back.
+    _options:
+    - _text: ASK WHAT HAPPENED TO GRANDMA
+      _targetIndex: 3
+    _nextIndex: 3
+  - _speaker: {fileID: 0}
+    _speakerType: 1
+    _text: Grandma? Is that... really you?
+    _options: []
+    _nextIndex: 4
+  - _speaker: {fileID: 0}
+    _speakerType: 1
+    _text: Did something happen on your trip?
+    _options: []
+    _nextIndex: 5
+  - _speaker: {fileID: 11400000, guid: 7d07f184b45977343aff295e2e2a471d, type: 2}
+    _speakerType: 0
+    _text: How could you be so rude to your own Grandmother?
+    _options: []
+    _nextIndex: 6
+  - _speaker: {fileID: 11400000, guid: 7d07f184b45977343aff295e2e2a471d, type: 2}
+    _speakerType: 0
+    _text: You insolent child!"
+    _options: []
+    _nextIndex: 7
+  - _speaker: {fileID: 11400000, guid: 23e3a82277d512e429cd9cf812e021f3, type: 2}
+    _speakerType: 0
+    _text: That is no way to welcome your Grandma back!
+    _options: []
+    _nextIndex: 8
+  - _speaker: {fileID: 11400000, guid: 23e3a82277d512e429cd9cf812e021f3, type: 2}
+    _speakerType: 0
+    _text: LEAVE!!!
+    _options: []
+    _nextIndex: 9
+  - _speaker: {fileID: 11400000, guid: 23e3a82277d512e429cd9cf812e021f3, type: 2}
+    _speakerType: 0
+    _text: Go back to your room. No breakfast for you."
+    _options: []
+    _nextIndex: -1
+  _allowsClueExchange: 0
+  _playsLieMotif: 0
