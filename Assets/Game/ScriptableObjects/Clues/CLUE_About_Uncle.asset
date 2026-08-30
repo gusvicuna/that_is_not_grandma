@@ -15,5 +15,5 @@ MonoBehaviour:
   _id: clue_about_uncle
   _text: It says "Grandma - DO NOT MOVE"
   _shortText: Uncle had a box full of pills of "Grandma"
-  _roomId: 2
+  _roomId: 3
   _isEvidence: 0

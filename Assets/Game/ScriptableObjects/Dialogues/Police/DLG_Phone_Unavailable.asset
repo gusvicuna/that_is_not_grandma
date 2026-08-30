@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fa0fb36a19452347ba407dd1a6317a6, type: 3}
   m_Name: DLG_Phone_Unavailable
   m_EditorClassIdentifier: Assembly-CSharp::Game.Data.DialogueSO
-  _id: Police
+  _id: dlg_phone_unavailable
   _nodes:
   - _speaker: {fileID: 0}
     _speakerType: 2

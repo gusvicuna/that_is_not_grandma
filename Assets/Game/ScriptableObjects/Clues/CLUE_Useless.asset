@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 285585a969554204aa943235a7a9bdb8, type: 3}
   m_Name: CLUE_Useless
   m_EditorClassIdentifier: Assembly-CSharp::Game.Data.ClueSO
-  _id: 
+  _id: clue_useless
   _text: ... I don't have time for that.
   _shortText: My favorite show is on
   _roomId: 1

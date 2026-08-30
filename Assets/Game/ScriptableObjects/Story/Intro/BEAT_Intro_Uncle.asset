@@ -27,7 +27,8 @@ MonoBehaviour:
   _condition:
     _requiredFlags:
     - intro_cousin
-    _forbiddenFlags: []
+    _forbiddenFlags:
+    - intro_done
     _minDay: 0
   _effects:
   - _kind: 4

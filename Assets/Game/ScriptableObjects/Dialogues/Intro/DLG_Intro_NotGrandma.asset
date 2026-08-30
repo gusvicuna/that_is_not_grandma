@@ -19,7 +19,7 @@ MonoBehaviour:
     _text: ...
     _options:
     - _text: GREET GRANDMA*
-      _targetIndex: 0
+      _targetIndex: 1
     _nextIndex: 1
   - _speaker: {fileID: 11400000, guid: 7d07f184b45977343aff295e2e2a471d, type: 2}
     _speakerType: 0

@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f31368e6a24c69540a77a174afdc36a7, type: 3}
   m_Name: BEAT_Phone_Appears
   m_EditorClassIdentifier: Assembly-CSharp::Game.Data.StoryBeatSO
-  _id: beat_find_uncle_clue
+  _id: beat_phone_appears
   _trigger: 5
-  _matchClue: {fileID: 11400000, guid: 01a7fb0d1bccbc74da5d97d151f4927a, type: 2}
+  _matchClue: {fileID: 0}
   _matchItem: {fileID: 0}
   _matchDialogue: {fileID: 0}
   _matchNpc: {fileID: 0}
@@ -26,8 +26,7 @@ MonoBehaviour:
   _repeatable: 0
   _condition:
     _requiredFlags: []
-    _forbiddenFlags:
-    - item_phone
+    _forbiddenFlags: []
     _minDay: 0
   _effects:
   - _kind: 0

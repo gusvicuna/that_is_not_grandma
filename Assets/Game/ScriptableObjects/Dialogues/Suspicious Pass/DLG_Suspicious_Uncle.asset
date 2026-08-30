@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fa0fb36a19452347ba407dd1a6317a6, type: 3}
   m_Name: DLG_Suspicious_Uncle
   m_EditorClassIdentifier: Assembly-CSharp::Game.Data.DialogueSO
-  _id: dlg_suspicous_uncle
+  _id: dlg_suspicious_uncle
   _nodes:
   - _speaker: {fileID: 11400000, guid: 23e3a82277d512e429cd9cf812e021f3, type: 2}
     _speakerType: 0
@@ -39,8 +39,8 @@ MonoBehaviour:
     _text: Not only is she sickly, she has a disrespectful grandkid!
     _options: []
     _nextIndex: 5
-  - _speaker: {fileID: 11400000, guid: 23e3a82277d512e429cd9cf812e021f3, type: 2}
-    _speakerType: 0
+  - _speaker: {fileID: 0}
+    _speakerType: 1
     _text: Please, Uncle. I just need to ask.
     _options: []
     _nextIndex: -1

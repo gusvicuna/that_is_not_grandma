@@ -12,7 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fa0fb36a19452347ba407dd1a6317a6, type: 3}
   m_Name: DLG_Uncle_Mute
   m_EditorClassIdentifier: Assembly-CSharp::Game.Data.DialogueSO
-  _id: 
-  _nodes: []
+  _id: dlg_uncle_mute
+  _nodes:
+  - _speaker: {fileID: 11400000, guid: 23e3a82277d512e429cd9cf812e021f3, type: 2}
+    _speakerType: 0
+    _text: hmm...
+    _options: []
+    _nextIndex: -1
   _allowsClueExchange: 0
   _playsLieMotif: 0

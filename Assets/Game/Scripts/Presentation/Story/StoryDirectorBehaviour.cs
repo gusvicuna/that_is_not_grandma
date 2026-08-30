@@ -17,6 +17,13 @@ namespace Game.Presentation
         [SerializeField] private StoryBeatSO[] _beats;
         [SerializeField] private StorySceneBinder _binder;
 
+        [Header("Replay")]
+        [Tooltip("Applied in Awake when the player restarts from the end screen: the effects that " +
+                 "leave the house exactly as the intro leaves it — actors hidden or shown, NPC " +
+                 "dialogues bound, and the flags that keep the intro beats from firing again. Its " +
+                 "trigger and match fields are ignored; only its effects are used.")]
+        [SerializeField] private StoryBeatSO _skipIntroBeat;
+
         [Header("Trigger channels")]
         [SerializeField] private ClueEventChannelSO _clueCollected;
         [SerializeField] private ItemEventChannelSO _itemInspected;
@@ -50,6 +57,13 @@ namespace Game.Presentation
             }
             _director = new StoryDirector(beats);
             _binder.Bind(_director);
+
+            // In Awake on purpose: the flags this sets have to be in place before the first
+            // channel is raised in Start, or the room announce would replay an intro beat.
+            if (RunSession.SkipIntro && _skipIntroBeat != null)
+            {
+                _binder.Apply(_skipIntroBeat);
+            }
         }
 
         private void OnEnable()

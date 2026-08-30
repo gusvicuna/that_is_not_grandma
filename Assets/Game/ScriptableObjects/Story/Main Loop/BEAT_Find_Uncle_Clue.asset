@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.Data.StoryBeatSO
   _id: beat_find_uncle_clue
   _trigger: 0
-  _matchClue: {fileID: 11400000, guid: 01a7fb0d1bccbc74da5d97d151f4927a, type: 2}
+  _matchClue: {fileID: 11400000, guid: 1386ae6718a2c8749a9098ac5e6a2969, type: 2}
   _matchItem: {fileID: 0}
   _matchDialogue: {fileID: 0}
   _matchNpc: {fileID: 0}

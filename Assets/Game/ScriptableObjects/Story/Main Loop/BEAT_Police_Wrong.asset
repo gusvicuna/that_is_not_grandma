@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.Data.StoryBeatSO
   _id: beat_police_wrong
   _trigger: 6
-  _matchClue: {fileID: 11400000, guid: 1386ae6718a2c8749a9098ac5e6a2969, type: 2}
+  _matchClue: {fileID: 0}
   _matchItem: {fileID: 0}
   _matchDialogue: {fileID: 0}
   _matchNpc: {fileID: 11400000, guid: 864a877dacd65e04aa31110ef2ae3534, type: 2}

@@ -27,6 +27,11 @@ namespace Game.Presentation
 
         [SerializeField] private bool _startDayOnStart = true;
 
+        [Tooltip("Optional. With this set — and Start Day On Start off — the first day begins when " +
+                 "this conversation ends instead of on load, so the intro plays on a stopped clock. " +
+                 "Point it at the last line of the intro.")]
+        [SerializeField] private DialogueSO _startDayAfterDialogue;
+
         [Header("Panels that also stop the clock (optional)")]
         [Tooltip("The share panel opens after a conversation ends, so the dialogue pause has already been lifted by then.")]
         [SerializeField] private ExchangeController _exchangeController;
@@ -105,10 +110,24 @@ namespace Game.Presentation
 
         private void Start()
         {
-            if (_startDayOnStart)
+            // A replay has no intro to wait for, so the run begins the moment the scene loads.
+            if (!_startDayOnStart && RunSession.SkipIntro)
             {
                 StartDay(1);
+                return;
             }
+            if (!_startDayOnStart)
+            {
+                return;
+            }
+            if (_startDayAfterDialogue != null)
+            {
+                Debug.LogWarning(
+                    $"DayNightCycle on '{name}': Start Day On Start is on, so the day begins now and " +
+                    $"'{_startDayAfterDialogue.name}' will never start it. Turn one of the two off.",
+                    this);
+            }
+            StartDay(1);
         }
 
         private void Update()
@@ -184,6 +203,16 @@ namespace Game.Presentation
         private void OnDialogueFinished(DialogueSO dialogue)
         {
             _paused = false;
+
+            // The last line of the intro starts the run. No talk cost for it: the conversation
+            // happened before the clock existed, and StartDay resets it to a full day anyway.
+            // CurrentDay guards against a replay of that dialogue rewinding the run to day 1.
+            if (_startDayAfterDialogue != null && dialogue == _startDayAfterDialogue && CurrentDay == 0)
+            {
+                StartDay(1);
+                return;
+            }
+
             Charge(_talkCost);
         }
 

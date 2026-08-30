@@ -15,8 +15,8 @@ MonoBehaviour:
   _id: mother
   _displayName: Mother
   _color: {r: 0.9333334, g: 0.509804, b: 0.9333334, a: 1}
-  _portrait: {fileID: 0}
-  _worldSprite: {fileID: 0}
+  _portrait: {fileID: -6299688593651957752, guid: 92cc67d61e1e8a140a9cc2bb7675d601, type: 3}
+  _worldSprite: {fileID: -6299688593651957752, guid: 92cc67d61e1e8a140a9cc2bb7675d601, type: 3}
   _leaksToNotGrandma: 0
   _exchangeEntries: []
   _fallbackReturnClue: {fileID: 11400000, guid: 1657459ec0636af46b8ebf5001015779, type: 2}

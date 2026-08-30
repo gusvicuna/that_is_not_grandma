@@ -15,8 +15,8 @@ MonoBehaviour:
   _id: cousin
   _displayName: Cousin
   _color: {r: 0.5294118, g: 0.8078432, b: 0.9803922, a: 1}
-  _portrait: {fileID: 0}
-  _worldSprite: {fileID: 0}
+  _portrait: {fileID: 6774215249170104131, guid: 5ef86b522794bb7408ea7abbe69fe880, type: 3}
+  _worldSprite: {fileID: 6774215249170104131, guid: 5ef86b522794bb7408ea7abbe69fe880, type: 3}
   _leaksToNotGrandma: 0
   _exchangeEntries:
   - _givenClue: {fileID: 11400000, guid: 1386ae6718a2c8749a9098ac5e6a2969, type: 2}

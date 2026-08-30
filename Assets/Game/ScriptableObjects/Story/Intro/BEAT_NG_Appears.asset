@@ -16,7 +16,7 @@ MonoBehaviour:
   _trigger: 4
   _matchClue: {fileID: 0}
   _matchItem: {fileID: 0}
-  _matchDialogue: {fileID: 11400000, guid: adf959e2d19f168419a7975bc07f5c10, type: 2}
+  _matchDialogue: {fileID: 0}
   _matchNpc: {fileID: 0}
   _matchRoom: 3
   _matchAnyRoom: 0
@@ -29,7 +29,8 @@ MonoBehaviour:
     - suspicious_uncle
     - suspicious_mother
     - suspicious_cousin
-    _forbiddenFlags: []
+    _forbiddenFlags:
+    - intro_done
     _minDay: 0
   _effects:
   - _kind: 4

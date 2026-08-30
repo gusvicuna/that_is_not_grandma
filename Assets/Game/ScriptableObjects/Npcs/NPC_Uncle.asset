@@ -15,10 +15,10 @@ MonoBehaviour:
   _id: uncle
   _displayName: Uncle
   _color: {r: 1, g: 0.9333334, b: 0.5490196, a: 1}
-  _portrait: {fileID: 0}
-  _worldSprite: {fileID: 0}
+  _portrait: {fileID: 5396485444723798328, guid: 0d8906808c90fda4e988cb04941e5190, type: 3}
+  _worldSprite: {fileID: 5396485444723798328, guid: 0d8906808c90fda4e988cb04941e5190, type: 3}
   _leaksToNotGrandma: 1
   _exchangeEntries:
   - _givenClue: {fileID: 11400000, guid: 21b7ed918b49c6f42b9e33a7da9e00b3, type: 2}
     _returnedClue: {fileID: 11400000, guid: 5129494d8661f3d4e86eeabcd3403cb9, type: 2}
-  _fallbackReturnClue: {fileID: 11400000, guid: c5a5db9b0df49d64da94afde99a0e484, type: 2}
+  _fallbackReturnClue: {fileID: 11400000, guid: 1657459ec0636af46b8ebf5001015779, type: 2}

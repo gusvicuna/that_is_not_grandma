@@ -96,16 +96,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b8f359ac6e1efb4c8009f4d24ef0ac5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Presentation.DayNightCycle
-  _secondsPerDay: 50
+  _secondsPerDay: 120
   _talkCost: 8
   _shareCost: 12
   _clueCost: 5
   _minimumSecondsAfterAction: 5
   _pauseWhileDialogueOpen: 1
-  _startDayOnStart: 1
+  _startDayOnStart: 0
+  _startDayAfterDialogue: {fileID: 11400000, guid: 3981430ae78e96f4abc855c068dc237e, type: 2}
   _exchangeController: {fileID: 2077834116845280953}
   _itemInspectPopup: {fileID: 0}
-  _dayStarted: {fileID: 0}
+  _dayStarted: {fileID: 11400000, guid: 0b4fc967165465c49b267009e5e2f5a5, type: 2}
   _nightStarted: {fileID: 11400000, guid: 309cb270ce0ebc6488cd2f7776c8b45a, type: 2}
   _nightResolved: {fileID: 11400000, guid: ce2fcfc381f9c1c419075c1b9878c4e7, type: 2}
   _nightSequenceFinished: {fileID: 11400000, guid: 6c5b25c807425ae4aa132d36f39979a6, type: 2}
@@ -177,7 +178,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Presentation.StoryDirectorBehaviour
   _beats:
-  - {fileID: 11400000, guid: 97c2e76b2e79e664082728304b4db09a, type: 2}
+  - {fileID: 11400000, guid: 17cbf9b7c37eef845a74c6ccdcbf560f, type: 2}
+  - {fileID: 11400000, guid: 6338ab73387e545408974fc3a337f883, type: 2}
+  - {fileID: 11400000, guid: b8ed54f76d9edd44a9c09730cbf43ad9, type: 2}
+  - {fileID: 11400000, guid: b9e6c0a292a04ef4a99c249a6955dc80, type: 2}
+  - {fileID: 11400000, guid: 4db9dfd201b99c6478089e1c6014c4e2, type: 2}
+  - {fileID: 11400000, guid: b04edc41bfb592f469c14f5acdf5128b, type: 2}
+  - {fileID: 11400000, guid: 601bff7bc9ab0b14e992e05fd26a7950, type: 2}
+  - {fileID: 11400000, guid: aada78a9952ce6e4b93127512b6e86fc, type: 2}
+  - {fileID: 11400000, guid: 646a539a08d7f484597cc0b673c5ec83, type: 2}
+  - {fileID: 11400000, guid: 98e4868aa23802b40bc5d38b68596264, type: 2}
+  - {fileID: 11400000, guid: 2037c345f44d33143a9ac72dc1a3adee, type: 2}
+  - {fileID: 11400000, guid: 160c3674fd7793d4781350cffccd384b, type: 2}
+  - {fileID: 11400000, guid: d3f6685536e89f943904dd22ec39c5c2, type: 2}
+  - {fileID: 11400000, guid: d62aa702ca480c84b9dcf55ef9df388a, type: 2}
+  - {fileID: 11400000, guid: d1323ce50bbba2b4ca30549a7dea456c, type: 2}
+  - {fileID: 11400000, guid: 53e7698e804c8cb46a0ce121ca90d1ea, type: 2}
+  - {fileID: 11400000, guid: d3ff798ed73303740860f50c7867f66a, type: 2}
+  - {fileID: 11400000, guid: 8105016134c58634d9a217249ae73d80, type: 2}
+  - {fileID: 11400000, guid: dffe4f3ee5461d6448e35d8ad42f0c02, type: 2}
+  - {fileID: 11400000, guid: dccb7011faaefc94689344d659e70849, type: 2}
+  - {fileID: 11400000, guid: 876a7f2c6eb9c9549819d9e2bd17e4c9, type: 2}
+  - {fileID: 11400000, guid: 431c103e679611e4f8ae3bea4d94523c, type: 2}
+  - {fileID: 11400000, guid: c38f59ad3124bc94d802da8d9b7cd60d, type: 2}
+  - {fileID: 11400000, guid: 2268ee59791fe4d44bd85d851e1c24dd, type: 2}
   _binder: {fileID: 6921785084632154022}
   _clueCollected: {fileID: 11400000, guid: 71308b7d6c0f02e4cb244720c3dec9ef, type: 2}
   _itemInspected: {fileID: 11400000, guid: a307042258a4664428942a8c60e05831, type: 2}
@@ -208,7 +232,33 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  _npcs: []
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  _npcs:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   _dialogueRequested: {fileID: 11400000, guid: 2c2f8eed39fb2cd4eac93a54c981a8a0, type: 2}
   _tensionChanged: {fileID: 11400000, guid: 5fad66bbaefb6f84196113f1061275a3, type: 2}
   _dialogueController: {fileID: 1502121097326250798}

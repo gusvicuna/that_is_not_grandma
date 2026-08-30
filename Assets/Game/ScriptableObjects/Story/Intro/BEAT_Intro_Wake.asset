@@ -13,20 +13,21 @@ MonoBehaviour:
   m_Name: BEAT_Intro_Wake
   m_EditorClassIdentifier: Assembly-CSharp::Game.Data.StoryBeatSO
   _id: beat_intro_wake
-  _trigger: 5
+  _trigger: 4
   _matchClue: {fileID: 0}
   _matchItem: {fileID: 0}
   _matchDialogue: {fileID: 0}
   _matchNpc: {fileID: 0}
   _matchRoom: 0
-  _matchAnyRoom: 0
+  _matchAnyRoom: 1
   _matchDay: 1
   _matchOutcome: 0
   _matchAnyOutcome: 0
   _repeatable: 0
   _condition:
     _requiredFlags: []
-    _forbiddenFlags: []
+    _forbiddenFlags:
+    - intro_done
     _minDay: 0
   _effects:
   - _kind: 4

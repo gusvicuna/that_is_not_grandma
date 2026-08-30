@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f31368e6a24c69540a77a174afdc36a7, type: 3}
   m_Name: BEAT_Suspicious_Pass
   m_EditorClassIdentifier: Assembly-CSharp::Game.Data.StoryBeatSO
-  _id: beat_intro_wake
+  _id: beat_suspicious_pass
   _trigger: 0
   _matchClue: {fileID: 11400000, guid: 3971db146db57aa4fa59d9eacf44ae83, type: 2}
   _matchItem: {fileID: 0}
@@ -26,7 +26,8 @@ MonoBehaviour:
   _repeatable: 0
   _condition:
     _requiredFlags: []
-    _forbiddenFlags: []
+    _forbiddenFlags:
+    - intro_done
     _minDay: 0
   _effects:
   - _kind: 3
@@ -64,16 +65,23 @@ MonoBehaviour:
     _dialogue: {fileID: 11400000, guid: 3981430ae78e96f4abc855c068dc237e, type: 2}
     _tension: 0
     _flag: 
-  - _kind: 0
+  - _kind: 2
     _actorId: npc_mother
-    _room: 2
+    _room: 0
     _npc: {fileID: 11400000, guid: 7d07f184b45977343aff295e2e2a471d, type: 2}
     _dialogue: {fileID: 11400000, guid: 3981430ae78e96f4abc855c068dc237e, type: 2}
     _tension: 0
     _flag: 
-  - _kind: 0
+  - _kind: 2
     _actorId: npc_uncle
-    _room: 2
+    _room: 1
+    _npc: {fileID: 11400000, guid: 7d07f184b45977343aff295e2e2a471d, type: 2}
+    _dialogue: {fileID: 11400000, guid: 3981430ae78e96f4abc855c068dc237e, type: 2}
+    _tension: 0
+    _flag: 
+  - _kind: 1
+    _actorId: item_glasses
+    _room: 1
     _npc: {fileID: 11400000, guid: 7d07f184b45977343aff295e2e2a471d, type: 2}
     _dialogue: {fileID: 11400000, guid: 3981430ae78e96f4abc855c068dc237e, type: 2}
     _tension: 0

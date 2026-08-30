@@ -27,7 +27,8 @@ MonoBehaviour:
   _condition:
     _requiredFlags:
     - intro_mother
-    _forbiddenFlags: []
+    _forbiddenFlags:
+    - intro_done
     _minDay: 0
   _effects:
   - _kind: 4
@@ -44,3 +45,17 @@ MonoBehaviour:
     _dialogue: {fileID: 11400000, guid: 7c491964d86174949b6466ded2e142c8, type: 2}
     _tension: 0
     _flag: 
+  - _kind: 6
+    _actorId: npc_cousin
+    _room: 0
+    _npc: {fileID: 0}
+    _dialogue: {fileID: 11400000, guid: 7c491964d86174949b6466ded2e142c8, type: 2}
+    _tension: 0
+    _flag: intro_cousin
+  - _kind: 2
+    _actorId: npc_uncle
+    _room: 1
+    _npc: {fileID: 0}
+    _dialogue: {fileID: 11400000, guid: 7c491964d86174949b6466ded2e142c8, type: 2}
+    _tension: 0
+    _flag: intro_cousin

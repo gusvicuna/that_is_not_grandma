@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a18cae27dc7af7d48922d1657464b838, type: 3}
   m_Name: NPC_Police
   m_EditorClassIdentifier: Assembly-CSharp::Game.Data.NpcSO
-  _id: 
-  _displayName: 
-  _color: {r: 0, g: 0, b: 0, a: 0}
+  _id: npc_police
+  _displayName: Police
+  _color: {r: 1, g: 1, b: 1, a: 0}
   _portrait: {fileID: 0}
   _worldSprite: {fileID: 0}
   _leaksToNotGrandma: 0

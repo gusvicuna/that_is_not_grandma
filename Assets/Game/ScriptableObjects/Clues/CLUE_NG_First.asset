@@ -15,5 +15,5 @@ MonoBehaviour:
   _id: clue_ng_first
   _text: Are this... Grandma's?
   _shortText: broken glasses that looks like they could be grandma's
-  _roomId: 3
+  _roomId: 1
   _isEvidence: 0

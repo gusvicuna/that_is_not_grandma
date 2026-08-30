@@ -24,13 +24,71 @@ public class RoomController : MonoBehaviour
                 "They must line up one to one, or the game announces the wrong room.",
                 this);
         }
+
+        for (int i = 0; i < roomCount; i++)
+        {
+            if (rooms[i] == null)
+            {
+                Debug.LogError(
+                    $"RoomController on '{name}': Rooms[{i}] is empty or points at a deleted object. " +
+                    "Changing rooms will throw as soon as it reaches that entry.",
+                    this);
+            }
+        }
     }
 
     void Start()
     {
-        // Announces the starting room too: without it the first room's ambience never begins and a
-        // beat waiting on that room can never fire.
-        ShowRoom(currentRoom);
+        // The scene is authored with one room already active and Start does not touch SetActive:
+        // whichever room is enabled in the editor is the one the run begins in. It is only picked
+        // up here so the arrows keep walking from the right place.
+        currentRoom = FindActiveRoom();
+
+        // The starting room is still announced: without it the first room's ambience never begins
+        // and a beat waiting on that room can never fire.
+        AnnounceRoom(currentRoom);
+    }
+
+    /// <summary>
+    /// The index of the room left active in the editor. Falls back to the first one — a scene with
+    /// every room disabled is an authoring mistake, and a black screen is a worse way to report it.
+    /// </summary>
+    private int FindActiveRoom()
+    {
+        int active = -1;
+        for (int i = 0; i < rooms.Length; i++)
+        {
+            if (rooms[i] == null || !rooms[i].activeSelf)
+            {
+                continue;
+            }
+            if (active < 0)
+            {
+                active = i;
+            }
+            else
+            {
+                Debug.LogWarning(
+                    $"RoomController on '{name}': Rooms[{i}] is active on top of Rooms[{active}]. " +
+                    "Only one room may start enabled; the first one wins.",
+                    this);
+            }
+        }
+
+        if (active >= 0)
+        {
+            return active;
+        }
+
+        Debug.LogError(
+            $"RoomController on '{name}': no room is active in the scene. Enable the starting room " +
+            "in the editor. Falling back to the first entry.",
+            this);
+        if (rooms.Length > 0 && rooms[0] != null)
+        {
+            rooms[0].SetActive(true);
+        }
+        return 0;
     }
 
     public void GoToNextRoom()

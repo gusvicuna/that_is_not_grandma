@@ -21,6 +21,9 @@ namespace Game.Presentation
         [Tooltip("The label stays hidden until this day. 2 keeps the first day from announcing that there will be others — the player should discover the loop by surviving a night, not by reading 'Day 1'.")]
         [SerializeField] private int _firstVisibleDay = 2;
 
+        [Tooltip("The clock face stays hidden until the first day starts, so the intro plays with no clock on screen. CurrentDay is 0 until DayNightCycle announces the first morning.")]
+        [SerializeField] private bool _hideUntilDayStarts = true;
+
         [Header("Clock face")]
         [Tooltip("The hour the day starts. 8 = 8 AM.")]
         [SerializeField] private int _startHour = 8;
@@ -95,6 +98,7 @@ namespace Game.Presentation
             }
 
             RefreshDay();
+            RefreshClockVisibility();
 
             TimeOfDay now = TimeOfDay.FromDayProgress(
                 1f - _dayNightCycle.NormalizedRemaining,
@@ -124,6 +128,25 @@ namespace Game.Presentation
             {
                 _tensionRaisedToday = true;
                 _tensionChanged.Raise(_tensionLevel);
+            }
+        }
+
+        /// <summary>
+        /// The clock face is switched off until the run actually begins. It hides the text object
+        /// rather than this one: a component on a disabled object stops listening, and the clock
+        /// would never come back.
+        /// </summary>
+        private void RefreshClockVisibility()
+        {
+            if (!_hideUntilDayStarts || _clockText.gameObject == gameObject)
+            {
+                return;
+            }
+
+            bool visible = _dayNightCycle.CurrentDay > 0;
+            if (_clockText.gameObject.activeSelf != visible)
+            {
+                _clockText.gameObject.SetActive(visible);
             }
         }
 
