@@ -1,0 +1,108 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f31368e6a24c69540a77a174afdc36a7, type: 3}
+  m_Name: BEAT_Intro_Ends
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Data.StoryBeatSO
+  _id: beat_intro_ends
+  _trigger: 2
+  _matchClue: {fileID: 0}
+  _matchItem: {fileID: 0}
+  _matchDialogue: {fileID: 11400000, guid: 3981430ae78e96f4abc855c068dc237e, type: 2}
+  _matchNpc: {fileID: 0}
+  _matchRoom: 0
+  _matchAnyRoom: 0
+  _matchDay: 1
+  _matchOutcome: 0
+  _matchAnyOutcome: 0
+  _repeatable: 0
+  _condition:
+    _requiredFlags: []
+    _forbiddenFlags: []
+    _minDay: 0
+  _effects:
+  - _kind: 1
+    _actorId: npc_mother
+    _room: 0
+    _npc: {fileID: 0}
+    _dialogue: {fileID: 11400000, guid: 2b4b4acb8ee9c4d40aa879f3cadd6c0b, type: 2}
+    _tension: 1
+    _flag: 
+  - _kind: 1
+    _actorId: npc_cousin
+    _room: 0
+    _npc: {fileID: 0}
+    _dialogue: {fileID: 11400000, guid: 2b4b4acb8ee9c4d40aa879f3cadd6c0b, type: 2}
+    _tension: 1
+    _flag: 
+  - _kind: 1
+    _actorId: npc_uncle
+    _room: 0
+    _npc: {fileID: 0}
+    _dialogue: {fileID: 11400000, guid: 2b4b4acb8ee9c4d40aa879f3cadd6c0b, type: 2}
+    _tension: 1
+    _flag: 
+  - _kind: 4
+    _actorId: npc_uncle
+    _room: 0
+    _npc: {fileID: 0}
+    _dialogue: {fileID: 11400000, guid: 2fa53f6a78f8c7c4a8f2cb1bcb76809a, type: 2}
+    _tension: 1
+    _flag: 
+  - _kind: 6
+    _actorId: npc_uncle
+    _room: 0
+    _npc: {fileID: 0}
+    _dialogue: {fileID: 11400000, guid: 2fa53f6a78f8c7c4a8f2cb1bcb76809a, type: 2}
+    _tension: 1
+    _flag: intro_done
+  - _kind: 0
+    _actorId: item_blue_book
+    _room: 0
+    _npc: {fileID: 0}
+    _dialogue: {fileID: 11400000, guid: 2fa53f6a78f8c7c4a8f2cb1bcb76809a, type: 2}
+    _tension: 1
+    _flag: intro_done
+  - _kind: 0
+    _actorId: item_key
+    _room: 0
+    _npc: {fileID: 0}
+    _dialogue: {fileID: 11400000, guid: 2fa53f6a78f8c7c4a8f2cb1bcb76809a, type: 2}
+    _tension: 1
+    _flag: intro_done
+  - _kind: 0
+    _actorId: item_pills
+    _room: 0
+    _npc: {fileID: 0}
+    _dialogue: {fileID: 11400000, guid: 2fa53f6a78f8c7c4a8f2cb1bcb76809a, type: 2}
+    _tension: 1
+    _flag: intro_done
+  - _kind: 0
+    _actorId: item_paper
+    _room: 0
+    _npc: {fileID: 0}
+    _dialogue: {fileID: 11400000, guid: 2fa53f6a78f8c7c4a8f2cb1bcb76809a, type: 2}
+    _tension: 1
+    _flag: intro_done
+  - _kind: 0
+    _actorId: item_teddyhead
+    _room: 0
+    _npc: {fileID: 0}
+    _dialogue: {fileID: 11400000, guid: 2fa53f6a78f8c7c4a8f2cb1bcb76809a, type: 2}
+    _tension: 1
+    _flag: intro_done
+  - _kind: 0
+    _actorId: hiding_object
+    _room: 0
+    _npc: {fileID: 0}
+    _dialogue: {fileID: 11400000, guid: 2fa53f6a78f8c7c4a8f2cb1bcb76809a, type: 2}
+    _tension: 1
+    _flag: intro_done

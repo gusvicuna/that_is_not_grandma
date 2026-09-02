@@ -1,0 +1,121 @@
+# Manual-only WebGL deploy to itch.io.
+#
+# There is deliberately NO push/pull_request trigger: during the jam a build
+# must never reach the public page without a human deciding so. Run it from
+# Actions -> Deploy to itch.io (manual) -> Run workflow.
+#
+# Before the first run, configure in the repo settings:
+#   Variable ITCH_TARGET     e.g. gusvicuna/that-is-not-grandma
+#   Secret   BUTLER_API_KEY  itch.io -> Settings -> API keys
+#   Secret   UNITY_LICENSE   contents of the .ulf from game-ci/unity-request-activation-file
+#   Secret   UNITY_EMAIL / UNITY_PASSWORD  (only needed for Pro/Plus serials)
+#
+# Expect 25-45 min on a cold Library cache.
+
+name: Deploy to itch.io (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: 'itch.io channel'
+        required: true
+        default: 'html'
+      userversion:
+        description: 'Version label shown on itch (blank = GitHub run number)'
+        required: false
+        default: ''
+
+concurrency:
+  group: itch-deploy
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    name: Build WebGL and push to itch.io
+    runs-on: ubuntu-latest
+    steps:
+      - name: Preflight — check credentials are configured
+        env:
+          ITCH_TARGET: ${{ vars.ITCH_TARGET }}
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          CHANNEL: ${{ inputs.channel }}
+        run: |
+          missing=""
+          [ -n "$ITCH_TARGET" ]    || missing="$missing ITCH_TARGET(variable)"
+          [ -n "$BUTLER_API_KEY" ] || missing="$missing BUTLER_API_KEY(secret)"
+          [ -n "$UNITY_LICENSE" ]  || missing="$missing UNITY_LICENSE(secret)"
+          if [ -n "$missing" ]; then
+            echo "::error::Not configured yet. Missing:$missing — see the header of this workflow file."
+            exit 1
+          fi
+          echo "Target: $ITCH_TARGET:$CHANNEL"
+
+      - name: Free disk space
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: true
+          large-packages: false
+
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Cache Library
+        uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-WebGL-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-WebGL-
+
+      - name: Build WebGL
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          unityVersion: 6000.5.9f1
+          targetPlatform: WebGL
+          buildsPath: build
+          # Semantic versioning is the default and needs git tags we do not keep.
+          versioning: None
+
+      - name: Locate build output
+        id: locate
+        run: |
+          dir=$(dirname "$(find build -name index.html -print -quit)")
+          if [ -z "$dir" ] || [ "$dir" = "." ]; then
+            echo "::error::No index.html found under build/ — the Unity build produced nothing usable."
+            find build -maxdepth 3 -type d
+            exit 1
+          fi
+          # BurstDebugInformation must never ship; it only bloats the upload.
+          find "$dir" -maxdepth 1 -name '*_BurstDebugInformation_DoNotShip' -exec rm -rf {} +
+          echo "dir=$dir" >> "$GITHUB_OUTPUT"
+          echo "Build dir: $dir ($(du -sh "$dir" | cut -f1))"
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: webgl-build
+          path: ${{ steps.locate.outputs.dir }}
+
+      - name: Push to itch.io
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+          ITCH_TARGET: ${{ vars.ITCH_TARGET }}
+          BUILD_DIR: ${{ steps.locate.outputs.dir }}
+          CHANNEL: ${{ inputs.channel }}
+          USERVERSION: ${{ inputs.userversion }}
+          RUN_NUMBER: ${{ github.run_number }}
+        run: |
+          version="$USERVERSION"
+          [ -n "$version" ] || version="$RUN_NUMBER"
+          curl -sL -o butler.zip https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default
+          unzip -q butler.zip
+          chmod +x butler
+          ./butler push "$BUILD_DIR" "$ITCH_TARGET:$CHANNEL" --userversion "$version"
+          ./butler status "$ITCH_TARGET:$CHANNEL"

@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f31368e6a24c69540a77a174afdc36a7, type: 3}
+  m_Name: BEAT_Find_Cousin_Clue
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Data.StoryBeatSO
+  _id: beat_find_cousin_clue
+  _trigger: 0
+  _matchClue: {fileID: 11400000, guid: 21b7ed918b49c6f42b9e33a7da9e00b3, type: 2}
+  _matchItem: {fileID: 0}
+  _matchDialogue: {fileID: 0}
+  _matchNpc: {fileID: 0}
+  _matchRoom: 0
+  _matchAnyRoom: 0
+  _matchDay: 0
+  _matchOutcome: 0
+  _matchAnyOutcome: 0
+  _repeatable: 0
+  _condition:
+    _requiredFlags: []
+    _forbiddenFlags:
+    - cousin_clue_found
+    _minDay: 0
+  _effects:
+  - _kind: 2
+    _actorId: npc_uncle
+    _room: 1
+    _npc: {fileID: 0}
+    _dialogue: {fileID: 0}
+    _tension: 0
+    _flag: 
+  - _kind: 3
+    _actorId: npc_cousin
+    _room: 3
+    _npc: {fileID: 11400000, guid: 23e3a82277d512e429cd9cf812e021f3, type: 2}
+    _dialogue: {fileID: 11400000, guid: 975039f6c830eef44a6ac4f26f7c5705, type: 2}
+    _tension: 0
+    _flag: 
+  - _kind: 1
+    _actorId: item_key
+    _room: 3
+    _npc: {fileID: 11400000, guid: 864a877dacd65e04aa31110ef2ae3534, type: 2}
+    _dialogue: {fileID: 11400000, guid: 28d9e11776494294684e4d9f132cd4be, type: 2}
+    _tension: 0
+    _flag: 
+  - _kind: 6
+    _actorId: item_blue_book
+    _room: 3
+    _npc: {fileID: 11400000, guid: 864a877dacd65e04aa31110ef2ae3534, type: 2}
+    _dialogue: {fileID: 11400000, guid: 28d9e11776494294684e4d9f132cd4be, type: 2}
+    _tension: 0
+    _flag: cousin_clue_found

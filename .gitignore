@@ -51,6 +51,7 @@ ExportedObj/
 *.csproj
 *.unityproj
 *.sln
+*.slnx
 *.suo
 *.tmp
 *.user
@@ -75,6 +76,8 @@ sysinfo.txt
 mono_crash.*
 
 # Builds
+/Builds/
+/Build/
 *.apk
 *.aab
 *.unitypackage
@@ -105,3 +108,8 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+
+# CI shadow project (hand-written, must survive the Unity *.csproj rule above)
+!/CI/**/*.csproj
+/CI/**/[Bb]in/
+/CI/**/[Oo]bj/
