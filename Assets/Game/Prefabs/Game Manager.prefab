@@ -202,7 +202,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 431c103e679611e4f8ae3bea4d94523c, type: 2}
   - {fileID: 11400000, guid: c38f59ad3124bc94d802da8d9b7cd60d, type: 2}
   - {fileID: 11400000, guid: 2268ee59791fe4d44bd85d851e1c24dd, type: 2}
+  - {fileID: 11400000, guid: b3da2d44cb3d7074ca45c99e2df49fa3, type: 2}
   _binder: {fileID: 6921785084632154022}
+  _skipIntroBeat: {fileID: 0}
   _clueCollected: {fileID: 11400000, guid: 71308b7d6c0f02e4cb244720c3dec9ef, type: 2}
   _itemInspected: {fileID: 11400000, guid: a307042258a4664428942a8c60e05831, type: 2}
   _dialogueFinished: {fileID: 11400000, guid: 3a93570ec78c46a44aea9429b557fad3, type: 2}
@@ -498,7 +500,7 @@ MonoBehaviour:
   _gameWon: {fileID: 11400000, guid: 34173488155bfdc4fb59fae97ec5b0f0, type: 2}
   _gameLost: {fileID: 11400000, guid: 02879f108f5438d4790b17089a0a2c42, type: 2}
   _policeCallResolved: {fileID: 11400000, guid: 3e284c6c8ea7c8847aa1dc043051477e, type: 2}
-  _startingTrust: 2
+  _startingTrust: 3
   _firstAvailableDay: 2
 --- !u!1 &9159081628688270094
 GameObject:

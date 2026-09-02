@@ -12,8 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9c720ff2e00eb148902a1e9d0b02947, type: 3}
   m_Name: SFX_Interact
   m_EditorClassIdentifier: Assembly-CSharp::Game.Data.AudioCueSO
-  _clips:
-  - {fileID: 8300000, guid: 5da13b6edd29b65499cf8eee2926d8c3, type: 3}
+  _clips: []
   _bus: 2
   _volumeMin: 1
   _volumeMax: 1

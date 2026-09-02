@@ -13,19 +13,20 @@ MonoBehaviour:
   m_Name: BEAT_Skip_Intro
   m_EditorClassIdentifier: Assembly-CSharp::Game.Data.StoryBeatSO
   _id: beat_skip_intro
-  _trigger: 0
+  _trigger: 4
   _matchClue: {fileID: 0}
   _matchItem: {fileID: 0}
   _matchDialogue: {fileID: 0}
   _matchNpc: {fileID: 0}
   _matchRoom: 0
-  _matchAnyRoom: 0
+  _matchAnyRoom: 1
   _matchDay: 0
   _matchOutcome: 0
   _matchAnyOutcome: 0
   _repeatable: 0
   _condition:
-    _requiredFlags: []
+    _requiredFlags:
+    - intro_done
     _forbiddenFlags: []
     _minDay: 0
   _effects:
@@ -127,10 +128,3 @@ MonoBehaviour:
     _dialogue: {fileID: 11400000, guid: 53ca487da1903fe4b8befd1305068aea, type: 2}
     _tension: 0
     _flag: 
-  - _kind: 6
-    _actorId: 
-    _room: 0
-    _npc: {fileID: 11400000, guid: 23e3a82277d512e429cd9cf812e021f3, type: 2}
-    _dialogue: {fileID: 11400000, guid: 53ca487da1903fe4b8befd1305068aea, type: 2}
-    _tension: 0
-    _flag: intro_done

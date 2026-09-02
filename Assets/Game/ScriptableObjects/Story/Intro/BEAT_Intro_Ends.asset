@@ -65,7 +65,7 @@ MonoBehaviour:
     _tension: 1
     _flag: intro_done
   - _kind: 0
-    _actorId: item_book
+    _actorId: item_blue_book
     _room: 0
     _npc: {fileID: 0}
     _dialogue: {fileID: 11400000, guid: 2fa53f6a78f8c7c4a8f2cb1bcb76809a, type: 2}
