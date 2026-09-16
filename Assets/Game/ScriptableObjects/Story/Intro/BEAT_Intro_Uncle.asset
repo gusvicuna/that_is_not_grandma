@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f31368e6a24c69540a77a174afdc36a7, type: 3}
+  m_Name: BEAT_Intro_Uncle
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Data.StoryBeatSO
+  _id: beat_intro_uncle
+  _trigger: 4
+  _matchClue: {fileID: 0}
+  _matchItem: {fileID: 0}
+  _matchDialogue: {fileID: 0}
+  _matchNpc: {fileID: 0}
+  _matchRoom: 1
+  _matchAnyRoom: 0
+  _matchDay: 1
+  _matchOutcome: 0
+  _matchAnyOutcome: 0
+  _repeatable: 0
+  _condition:
+    _requiredFlags:
+    - intro_cousin
+    _forbiddenFlags:
+    - intro_done
+    _minDay: 0
+  _effects:
+  - _kind: 4
+    _actorId: 
+    _room: 0
+    _npc: {fileID: 0}
+    _dialogue: {fileID: 11400000, guid: adf959e2d19f168419a7975bc07f5c10, type: 2}
+    _tension: 0
+    _flag: 

@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f31368e6a24c69540a77a174afdc36a7, type: 3}
+  m_Name: BEAT_Suspicious_Uncle_Post
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Data.StoryBeatSO
+  _id: beat_suspicious_uncle_post
+  _trigger: 2
+  _matchClue: {fileID: 0}
+  _matchItem: {fileID: 0}
+  _matchDialogue: {fileID: 11400000, guid: 5be995ba8069b7e43b0fc9f2a0242d7e, type: 2}
+  _matchNpc: {fileID: 0}
+  _matchRoom: 0
+  _matchAnyRoom: 0
+  _matchDay: 1
+  _matchOutcome: 0
+  _matchAnyOutcome: 0
+  _repeatable: 0
+  _condition:
+    _requiredFlags: []
+    _forbiddenFlags: []
+    _minDay: 0
+  _effects:
+  - _kind: 3
+    _actorId: 
+    _room: 0
+    _npc: {fileID: 11400000, guid: 23e3a82277d512e429cd9cf812e021f3, type: 2}
+    _dialogue: {fileID: 11400000, guid: 53ca487da1903fe4b8befd1305068aea, type: 2}
+    _tension: 0
+    _flag: 

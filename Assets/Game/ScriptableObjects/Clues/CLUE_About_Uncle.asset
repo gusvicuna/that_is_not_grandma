@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 285585a969554204aa943235a7a9bdb8, type: 3}
+  m_Name: CLUE_About_Uncle
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Data.ClueSO
+  _id: clue_about_uncle
+  _text: It says "Grandma - DO NOT MOVE"
+  _shortText: Uncle had a box full of pills of "Grandma"
+  _roomId: 3
+  _isEvidence: 0

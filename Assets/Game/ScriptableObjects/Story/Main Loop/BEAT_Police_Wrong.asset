@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f31368e6a24c69540a77a174afdc36a7, type: 3}
+  m_Name: BEAT_Police_Wrong
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Data.StoryBeatSO
+  _id: beat_police_wrong
+  _trigger: 6
+  _matchClue: {fileID: 0}
+  _matchItem: {fileID: 0}
+  _matchDialogue: {fileID: 0}
+  _matchNpc: {fileID: 11400000, guid: 864a877dacd65e04aa31110ef2ae3534, type: 2}
+  _matchRoom: 0
+  _matchAnyRoom: 0
+  _matchDay: 2
+  _matchOutcome: 2
+  _matchAnyOutcome: 0
+  _repeatable: 1
+  _condition:
+    _requiredFlags: []
+    _forbiddenFlags: []
+    _minDay: 0
+  _effects:
+  - _kind: 4
+    _actorId: item_phone
+    _room: 0
+    _npc: {fileID: 0}
+    _dialogue: {fileID: 11400000, guid: 94b44d82fd795e4408ce96ceac1280de, type: 2}
+    _tension: 0
+    _flag: 
+  - _kind: 5
+    _actorId: item_phone
+    _room: 0
+    _npc: {fileID: 0}
+    _dialogue: {fileID: 11400000, guid: 15cddd185cf63e9448f04afb9386801c, type: 2}
+    _tension: 2
+    _flag: 
