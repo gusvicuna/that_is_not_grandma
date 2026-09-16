@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 5427849562053286923}
   - component: {fileID: 6060869492309471041}
   - component: {fileID: 2584651245115082910}
+  - component: {fileID: -2154856250534487418}
+  - component: {fileID: 6679843906507309916}
   m_Layer: 5
   m_Name: ClueShareItem
   m_TagString: Untagged
@@ -103,6 +105,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Presentation.DraggableClueItem
   _label: {fileID: 1541941998286154361}
+  _dragStartSfx: {fileID: -2154856250534487418}
+  _dragRejectedSfx: {fileID: 6679843906507309916}
+--- !u!114 &-2154856250534487418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 996962435872978776}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91c46008e17a2d442b9f2d3e573404e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Presentation.UiSfxEmitter
+  _cue: {fileID: 11400000, guid: e4286e0d0be07c64ab8f2d9a1e6acb08, type: 2}
+  _sfxRequestedChannel: {fileID: 11400000, guid: 4fad1bbbae0224e41bdc02966ed3bef2, type: 2}
+--- !u!114 &6679843906507309916
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 996962435872978776}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91c46008e17a2d442b9f2d3e573404e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Presentation.UiSfxEmitter
+  _cue: {fileID: 11400000, guid: eb495a8bf6c759841baa61e9ea983611, type: 2}
+  _sfxRequestedChannel: {fileID: 11400000, guid: 4fad1bbbae0224e41bdc02966ed3bef2, type: 2}
 --- !u!1 &8034901668820323553
 GameObject:
   m_ObjectHideFlags: 0

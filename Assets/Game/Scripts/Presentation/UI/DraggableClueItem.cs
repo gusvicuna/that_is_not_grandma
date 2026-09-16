@@ -13,6 +13,10 @@ namespace Game.Presentation
 
         [SerializeField] private TextMeshProUGUI _label;
 
+        [Header("Audio (optional)")]
+        [SerializeField] private UiSfxEmitter _dragStartSfx;
+        [SerializeField] private UiSfxEmitter _dragRejectedSfx;
+
         private CanvasGroup _canvasGroup;
         private Canvas _rootCanvas;
         private RectTransform _ghost;
@@ -39,10 +43,12 @@ namespace Game.Presentation
         {
             if (!_isDraggable)
             {
+                PlaySfx(_dragRejectedSfx);
                 // Clearing pointerDrag cancels the drag: no OnDrag, OnEndDrag or OnDrop will follow
                 eventData.pointerDrag = null;
                 return;
             }
+            PlaySfx(_dragStartSfx);
             _ghost = CreateGhost();
             _ghost.position = eventData.position;
         }
@@ -72,6 +78,17 @@ namespace Game.Presentation
             DestroyGhost();
         }
 
+        // Unwired is silent: a clue item in a scene without the audio stack must still drag
+        private void PlaySfx(UiSfxEmitter emitter)
+        {
+            if (emitter != null)
+            {
+                emitter.Play();
+            }
+        }
+
+        // The clone keeps its UiSfxEmitters — harmless, nothing calls Play on a ghost. Anything
+        // added here that emits sound would fire from a copy nobody owns
         private RectTransform CreateGhost()
         {
             GameObject ghost = Instantiate(gameObject, _rootCanvas.transform);
